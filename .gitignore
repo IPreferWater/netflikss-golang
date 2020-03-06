@@ -9,7 +9,7 @@ stock/*.mp4
 *.so
 *.dylib
 
-# Test binary, built with `go test -c`
+# Test binary, built with `go test -ex2_3`
 *.test
 
 # Output of the go coverage tool, specifically when used with LiteIDE
