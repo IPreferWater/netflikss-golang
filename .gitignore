@@ -1,3 +1,7 @@
+.idea
+.DS_Store
+# don't add videos
+stock/*.mp4
 # Binaries for programs and plugins
 *.exe
 *.exe~
