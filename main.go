@@ -52,10 +52,18 @@ func testDirectory(){
 	for _, f := range filess {
 		if f.IsDir() {
 			fmt.Println(f.Name())
-			content, err := ioutil.ReadFile("./stock/"+f.Name()+"/info.json")
+			 infoJsonFile := "./stock/"+f.Name()+"/info.json";
+			content, err := ioutil.ReadFile(infoJsonFile)
 
 			if err != nil {
-				fmt.Print("Error:", err)
+				fmt.Print("need to be created:", err)
+				newJsonFile := files.Info{
+					Label:   "new",
+					Seasons: nil,
+				}
+				file, _ := json.MarshalIndent(newJsonFile, "", " ")
+
+				_ = ioutil.WriteFile(infoJsonFile, file, 0644)
 				continue
 			}
 			result := files.Info{}
