@@ -1,20 +1,22 @@
 package main
 
 import (
-	"./files"
-	"./graphql"
-	"encoding/json"
+	//"./organizer"
+	//"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
 )
 
 func main() {
-	testDirectory()
+	//testDirectory()
+	//createInfoJson()
 
 	go func() {
-		graphql.StartServerGraphQL()
+		//graphql.StartServerGraphQL()
 	}()
 
 		fs := http.FileServer(http.Dir("./stock"))
@@ -27,23 +29,61 @@ func main() {
 		}
 }
 
-func testDirectory(){
-	/*var files []string
-
-	root := "./stock"
-	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
-		files = append(files, path)
-		return nil
-	})
+func createInfoJson(fileName string){
+	filess, err := ioutil.ReadDir(fileName)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
-	for _, file := range files {
-		fmt.Println(file)
-	}*/
+	fmt.Printf("read all directories from %s \n", fileName)
+	for _, f := range filess {
+		if f.IsDir() {
+			//seasons directories
+			fmt.Println(f.Name())
+			readAllInside(fileName+"/"+f.Name())
+		}
+	}
+}
 
+func readAllInside(directory string){
+	filess, err := ioutil.ReadDir(directory)
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	for _, f := range filess {
+			fmt.Println(f.Name())
+			guessedNumber := guessNumber(f.Name())
+			fmt.Printf("guessed number = %s \n", guessedNumber)
+	}
+}
 
+func guessNumber(fileName string) string{
+	lastIndexOfPoint := strings.LastIndex(fileName, ".")
+	if lastIndexOfPoint<0 {
+		return ""
+	}
+
+	removedFileExtension := fileName[0:lastIndexOfPoint]
+	fmt.Println(removedFileExtension)
+
+	lastCharacter := removedFileExtension[lastIndexOfPoint-1:lastIndexOfPoint]
+
+	_, err :=strconv.Atoi(lastCharacter)
+	if err != nil{
+		return ""
+	}
+
+	twoLastCharacter := removedFileExtension[lastIndexOfPoint-2:lastIndexOfPoint]
+
+	_, err2 :=strconv.Atoi(twoLastCharacter)
+	if err2 != nil{
+		return lastCharacter
+	}
+
+	return twoLastCharacter
+}
+
+func testDirectory(){/*
 	filess, err := ioutil.ReadDir("./stock")
 	if err != nil {
 		log.Fatal(err)
@@ -52,21 +92,16 @@ func testDirectory(){
 	for _, f := range filess {
 		if f.IsDir() {
 			fmt.Println(f.Name())
-			 infoJsonFile := "./stock/"+f.Name()+"/info.json";
+			 infoJsonFile := "./stock/"+f.Name()+"/info.json"
 			content, err := ioutil.ReadFile(infoJsonFile)
 
 			if err != nil {
-				fmt.Print("need to be created:", err)
-				newJsonFile := files.Info{
-					Label:   "new",
-					Seasons: nil,
-				}
-				file, _ := json.MarshalIndent(newJsonFile, "", " ")
+				fmt.Println("need to be created:", err)
+				createInfoJson("./stock/"+f.Name())
 
-				_ = ioutil.WriteFile(infoJsonFile, file, 0644)
 				continue
 			}
-			result := files.Info{}
+			result := organizer.Info{}
 			err = json.Unmarshal(content, &result)
 			if err != nil {
 				fmt.Print("Error:", err)
@@ -74,10 +109,9 @@ func testDirectory(){
 
 				continue
 			}
-			fmt.Print("ok:", result.Seasons)
-		}
+		}*/
 	}
 
 
-}
+
 

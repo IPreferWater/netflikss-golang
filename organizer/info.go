@@ -1,4 +1,4 @@
-package files
+package organizer
 
 
 type Episode struct {
