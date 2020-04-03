@@ -27,4 +27,9 @@ func TestGuessNumber(t *testing.T) {
 	if withoutDot != "123" {
 		t.Errorf("5 incorrect, got: %s, want: %s", withoutDot, "123")
 	}
+
+	onlyNumber := guessNumber("54.xx")
+	if onlyNumber != "54" {
+		t.Errorf("6 incorrect, got: %s, want: %s", onlyNumber, "54")
+	}
 }

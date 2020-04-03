@@ -26,6 +26,14 @@ func isNumeric(s string) bool {
 	return err == nil
 }
 
+func removeUselessZero(s string) string {
+	intNumber, err := strconv.Atoi(s)
+	if err != nil {
+		return ""
+	}
+	return strconv.Itoa(intNumber)
+}
+
 func guessNumber(fileName string) string {
 	lastIndexOfPoint := strings.LastIndex(fileName, ".")
 	if lastIndexOfPoint < 0 {
@@ -38,18 +46,14 @@ func guessNumber(fileName string) string {
 	for i := 1; i < len(noExtension); i++ {
 		stringToTest := noExtension[lastIndexOfPoint-i : len(noExtension)]
 		if !isNumeric(stringToTest) {
-
+			//the last character was not a digit, the filename doesn't end by a number
 			if i == 1 {
 				return ""
 			}
 			//the previous was the correct one
 			finalNumberString := noExtension[lastIndexOfPoint-i+1 : len(noExtension)]
-
-			//we convert to int to remove useless 0
-			floatNumber, _ := strconv.Atoi(finalNumberString)
-
-			return strconv.Itoa(floatNumber)
+			return removeUselessZero(finalNumberString)
 		}
 	}
-	return ""
+	return removeUselessZero(noExtension)
 }
