@@ -6,7 +6,43 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"os"
 )
+
+//TODO: we need to let the user choose his media folder
+func getAllInStockFolder() []os.FileInfo{
+	files, err := ioutil.ReadDir("../stock")
+	if err != nil {
+		log.Fatal(err)
+	}
+	return files
+}
+
+func filterByDirectory(files []os.FileInfo) []os.FileInfo {
+    		//filter to get only the directories
+			directories := make([]os.FileInfo, 0)
+			for _, file := range files {
+				if file.IsDir() {
+					directories = append(directories, file)
+				}
+			}
+			return directories
+}
+
+func createInfoJson(fileName string) {
+	filess, err := ioutil.ReadDir(fileName)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("read all directories from %s \n", fileName)
+	for _, f := range filess {
+		if f.IsDir() {
+			//seasons directories
+			fmt.Println(f.Name())
+			//readAllInside(fileName + "/" + f.Name())
+		}
+	}
+}
 
 func readAllInside(directory string) {
 	filess, err := ioutil.ReadDir(directory)

@@ -25,20 +25,7 @@ func main() {
 	}
 }
 
-func createInfoJson(fileName string) {
-	filess, err := ioutil.ReadDir(fileName)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("read all directories from %s \n", fileName)
-	for _, f := range filess {
-		if f.IsDir() {
-			//seasons directories
-			fmt.Println(f.Name())
-			//readAllInside(fileName + "/" + f.Name())
-		}
-	}
-}
+
 
 func testDirectory() { /*
 		filess, err := ioutil.ReadDir("./stock")
