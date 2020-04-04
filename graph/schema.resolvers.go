@@ -12,10 +12,6 @@ import (
 	"github.com/ipreferwater/netflikss-golang/graph/model"
 )
 
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented"))
-}
-
 func (r *mutationResolver) CreateSerie(ctx context.Context, input model.InputSerie) (*model.Serie, error) {
 	/*serie := &model.Serie{
 		ID:    fmt.Sprintf("T%d", rand.Int()),
@@ -29,10 +25,6 @@ func (r *mutationResolver) CreateSerie(ctx context.Context, input model.InputSer
 		Label: "fake",
 	}
 	return serie, nil
-}
-
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented"))
 }
 
 func (r *queryResolver) Series(ctx context.Context) ([]*model.Serie, error) {

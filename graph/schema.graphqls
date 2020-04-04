@@ -1,4 +1,3 @@
-
 type Serie {
   id: ID!
 	label: String!
@@ -16,26 +15,8 @@ type Episode {
 	label: String!
 }
 
-type Todo {
-  id: ID!
-  text: String!
-  done: Boolean!
-  user: User!
-}
-
-type User {
-  id: ID!
-  name: String!
-}
-
 type Query {
-  todos: [Todo!]!
   series: [Serie!]!
-}
-
-input NewTodo {
-  text: String!
-  userId: String!
 }
 
 input InputSerie {
@@ -43,6 +24,5 @@ input InputSerie {
 }
 
 type Mutation {
-  createTodo(input: NewTodo!): Todo!
   createSerie(input: InputSerie!): Serie!
 }
