@@ -6,6 +6,7 @@ package graph
 import (
 	"context"
 	"fmt"
+	"math/rand"
 
 	"github.com/ipreferwater/netflikss-golang/graph/generated"
 	"github.com/ipreferwater/netflikss-golang/graph/model"
@@ -15,8 +16,27 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 	panic(fmt.Errorf("not implemented"))
 }
 
+func (r *mutationResolver) CreateSerie(ctx context.Context, input model.InputSerie) (*model.Serie, error) {
+	/*serie := &model.Serie{
+		ID:    fmt.Sprintf("T%d", rand.Int()),
+		Label: input.Label,
+	}
+	r.series = append(r.series, serie)
+	return serie, nil*/
+	//we should trigger creation from files
+	serie := &model.Serie{
+		ID:    fmt.Sprintf("T%d", rand.Int()),
+		Label: "fake",
+	}
+	return serie, nil
+}
+
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) Series(ctx context.Context) ([]*model.Serie, error) {
+	return r.series, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

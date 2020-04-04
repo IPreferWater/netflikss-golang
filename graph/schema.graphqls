@@ -1,6 +1,20 @@
-# GraphQL schema example
-#
-# https://gqlgen.com/getting-started/
+
+type Serie {
+  id: ID!
+	label: String!
+	Seasons: [Season!]
+  }
+
+type Season {
+	number: Int!
+	label: String!
+	episodes: [Episode!]
+}
+
+type Episode {
+	number: Int!
+	label: String!
+}
 
 type Todo {
   id: ID!
@@ -16,6 +30,7 @@ type User {
 
 type Query {
   todos: [Todo!]!
+  series: [Serie!]!
 }
 
 input NewTodo {
@@ -23,6 +38,11 @@ input NewTodo {
   userId: String!
 }
 
+input InputSerie {
+  work: Boolean!
+}
+
 type Mutation {
   createTodo(input: NewTodo!): Todo!
+  createSerie(input: InputSerie!): Serie!
 }
