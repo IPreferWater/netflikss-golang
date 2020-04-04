@@ -44,7 +44,15 @@ func TestReadAllInside(t *testing.T) {
 
 	filtered := filterByDirectory(allFiles)
 	lenFiltered := len(filtered)
-	if lenFiltered != 3 {
-		t.Errorf("2 incorrect, got: %d, want: %d", lenFiltered, 3)
+		if lenFiltered != 3 {
+			t.Errorf("2 incorrect, got: %d, want: %d", lenFiltered, 3)
+		}
 	}
+
+//todelete, just to test the behavior
+func TestTt(t *testing.T) {
+	readAllInside()
+	if 1 != 1 {
+		t.Errorf("?")
 	}
+}

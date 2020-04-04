@@ -7,11 +7,28 @@ import (
 	"strconv"
 	"strings"
 	"os"
+	"path/filepath"
 )
+
+const (
+	 stockPath string = "../stock"
+	 infoJSONFileName string = "info.json"
+)
+	
+
+
+// checks if a file exists and is not a directory
+func fileExists(filename string) bool {
+    info, err := os.Stat(filename)
+    if os.IsNotExist(err) {
+        return false
+    }
+    return !info.IsDir()
+}
 
 //TODO: we need to let the user choose his media folder
 func getAllInStockFolder() []os.FileInfo{
-	files, err := ioutil.ReadDir("../stock")
+	files, err := ioutil.ReadDir(stockPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -29,31 +46,13 @@ func filterByDirectory(files []os.FileInfo) []os.FileInfo {
 			return directories
 }
 
-func createInfoJson(fileName string) {
-	filess, err := ioutil.ReadDir(fileName)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("read all directories from %s \n", fileName)
-	for _, f := range filess {
-		if f.IsDir() {
-			//seasons directories
-			fmt.Println(f.Name())
-			//readAllInside(fileName + "/" + f.Name())
-		}
-	}
-}
-
-func readAllInside(directory string) {
-	filess, err := ioutil.ReadDir(directory)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for _, f := range filess {
-		fmt.Println(f.Name())
-		guessedNumber := guessNumber(f.Name())
-		fmt.Printf("guessed number = %s \n", guessedNumber)
+//work method
+func readAllInside() {
+	files := getAllInStockFolder()
+	filtered := filterByDirectory(files)
+	for _, directory := range filtered {
+		infoJSONPath := filepath.Join(stockPath, directory.Name(),infoJSONFileName)
+		fmt.Printf("in the directory %s the info.json exit ? %t\n", directory.Name(), fileExists(infoJSONPath))
 	}
 }
 
