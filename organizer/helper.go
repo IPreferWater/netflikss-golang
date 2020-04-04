@@ -1,6 +1,8 @@
 package organizer
 
 import (
+	"github.com/ipreferwater/netflikss-golang/graph/model"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -47,13 +49,28 @@ func filterByDirectory(files []os.FileInfo) []os.FileInfo {
 }
 
 //work method
-func readAllInside() {
+func ReadAllInside() []model.Serie{
 	files := getAllInStockFolder()
 	filtered := filterByDirectory(files)
+	series := make([]model.Serie, 0)
+
 	for _, directory := range filtered {
 		infoJSONPath := filepath.Join(stockPath, directory.Name(),infoJSONFileName)
 		fmt.Printf("in the directory %s the info.json exit ? %t\n", directory.Name(), fileExists(infoJSONPath))
+		if(fileExists(infoJSONPath)){
+			content, err := ioutil.ReadFile(infoJSONPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			serie := model.Serie{}
+				err = json.Unmarshal(content, &serie)
+				if err != nil {
+					fmt.Printf("Failed to unmarshal content %s, the error is %v", string(content), err)
+				}
+				series = append(series, serie)
+		}
 	}
+	return series
 }
 
 func isNumeric(s string) bool {

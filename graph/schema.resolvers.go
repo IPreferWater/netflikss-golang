@@ -10,6 +10,7 @@ import (
 
 	"github.com/ipreferwater/netflikss-golang/graph/generated"
 	"github.com/ipreferwater/netflikss-golang/graph/model"
+	"github.com/ipreferwater/netflikss-golang/organizer"
 )
 
 func (r *mutationResolver) CreateSerie(ctx context.Context, input model.InputSerie) (*model.Serie, error) {
@@ -23,6 +24,10 @@ func (r *mutationResolver) CreateSerie(ctx context.Context, input model.InputSer
 	serie := &model.Serie{
 		ID:    fmt.Sprintf("T%d", rand.Int()),
 		Label: "fake",
+	}
+	series := organizer.ReadAllInside()
+	for _, serie := range series {
+		r.series = append(r.series, &serie)
 	}
 	return serie, nil
 }

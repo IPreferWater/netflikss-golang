@@ -51,7 +51,7 @@ func TestReadAllInside(t *testing.T) {
 
 //todelete, just to test the behavior
 func TestTt(t *testing.T) {
-	readAllInside()
+	ReadAllInside()
 	if 1 != 1 {
 		t.Errorf("?")
 	}
