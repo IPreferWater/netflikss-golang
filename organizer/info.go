@@ -1,9 +1,8 @@
 package organizer
 
-
-type Episode struct {
-	Number int `json:"number"`
-	Label string `json:"label"`
+type Serie struct {
+	Label          string `json:"label"`
+	Seasons []Season `json:"seasons"`
 }
 
 type Season struct {
@@ -12,7 +11,16 @@ type Season struct {
 	Episodes []Episode `json:"episodes"`
 }
 
-type Info struct {
-	Label          string `json:"label"`
-	Seasons []Season `json:"seasons"`
+type Episode struct {
+	Number int `json:"number"`
+	Label string `json:"label"`
+}
+
+type BundleMovies struct {
+	Label   string `json:"label"`
+	Movies []Movie `json:"movie"`
+}
+
+type Movie struct {
+	Label   string `json:"label"`
 }
