@@ -1,0 +1,37 @@
+{
+  "label" : "got",
+  "seasons": [
+    {
+      "number" : 1,
+      "label": "this is the first",
+      "episodes" : [{
+        "number" : 1,
+        "label" : "premier"
+      },
+        {
+          "number" : 2,
+          "label" : "deuxieme"
+        },
+        {
+          "number" : 3,
+          "label" : "troisieme"
+        }]
+    },
+    {
+      "number" : 2,
+      "label": "this is the second",
+      "episodes" : [{
+        "number" : 1,
+        "label" : "ichiban"
+      },
+        {
+          "number" : 2,
+          "label" : "niban"
+        },
+        {
+          "number" : 3,
+          "label" : "sanban"
+        }]
+    }
+  ]
+}

@@ -14,21 +14,16 @@ import (
 )
 
 func (r *mutationResolver) CreateSerie(ctx context.Context, input model.InputSerie) (*model.Serie, error) {
-	/*serie := &model.Serie{
-		ID:    fmt.Sprintf("T%d", rand.Int()),
-		Label: input.Label,
-	}
-	r.series = append(r.series, serie)
-	return serie, nil*/
 	//we should trigger creation from files
 	serie := &model.Serie{
 		ID:    fmt.Sprintf("T%d", rand.Int()),
 		Label: "fake",
 	}
 	series := organizer.ReadAllInside()
-	for _, serie := range series {
-		r.series = append(r.series, &serie)
+	for idx := range series {
+		r.series = append(r.series, &series[idx])
 	}
+	
 	return serie, nil
 }
 
