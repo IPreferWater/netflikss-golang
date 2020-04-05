@@ -1,73 +1,73 @@
 package organizer
 
 import (
-	"github.com/ipreferwater/netflikss-golang/graph/model"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
-	"strconv"
-	"strings"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
+
+	"github.com/ipreferwater/netflikss-golang/graph/model"
 )
 
 const (
-	 stockPath string = "../stock"
-	 infoJSONFileName string = "info.json"
+	stockPath        string = "stock"
+	infoJSONFileName string = "info.json"
 )
-	
-
 
 // checks if a file exists and is not a directory
 func fileExists(filename string) bool {
-    info, err := os.Stat(filename)
-    if os.IsNotExist(err) {
-        return false
-    }
-    return !info.IsDir()
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }
 
 //TODO: we need to let the user choose his media folder
-func getAllInStockFolder() []os.FileInfo{
+func getAllInStockFolder() []os.FileInfo {
 	files, err := ioutil.ReadDir(stockPath)
 	if err != nil {
+		fmt.Printf("***\ncan't read the file %s \n", stockPath)
 		log.Fatal(err)
 	}
 	return files
 }
 
 func filterByDirectory(files []os.FileInfo) []os.FileInfo {
-    		//filter to get only the directories
-			directories := make([]os.FileInfo, 0)
-			for _, file := range files {
-				if file.IsDir() {
-					directories = append(directories, file)
-				}
-			}
-			return directories
+	//filter to get only the directories
+	directories := make([]os.FileInfo, 0)
+	for _, file := range files {
+		if file.IsDir() {
+			directories = append(directories, file)
+		}
+	}
+	return directories
 }
 
 //work method
-func ReadAllInside() []model.Serie{
+func ReadAllInside() []model.Serie {
 	files := getAllInStockFolder()
 	filtered := filterByDirectory(files)
 	series := make([]model.Serie, 0)
 
 	for _, directory := range filtered {
-		infoJSONPath := filepath.Join(stockPath, directory.Name(),infoJSONFileName)
+		infoJSONPath := filepath.Join(stockPath, directory.Name(), infoJSONFileName)
 		fmt.Printf("in the directory %s the info.json exit ? %t\n", directory.Name(), fileExists(infoJSONPath))
-		if(fileExists(infoJSONPath)){
+		if fileExists(infoJSONPath) {
 			content, err := ioutil.ReadFile(infoJSONPath)
 			if err != nil {
 				log.Fatal(err)
 			}
 			serie := model.Serie{}
-				err = json.Unmarshal(content, &serie)
-				if err != nil {
-					fmt.Printf("Failed to unmarshal content %s, the error is %v", string(content), err)
-				}
-				series = append(series, serie)
+			err = json.Unmarshal(content, &serie)
+			if err != nil {
+				fmt.Printf("Failed to unmarshal content %s, the error is %v", string(content), err)
+			}
+			series = append(series, serie)
 		}
 	}
 	return series

@@ -1,13 +1,6 @@
 package main
 
-import (
-	"fmt"
-	"io/ioutil"
-	"log"
-	"net/http"
-)
-
-func main() {
+/*func main() {
 	//testDirectory()
 	//createInfoJson()
 
@@ -18,14 +11,12 @@ func main() {
 	fs := http.FileServer(http.Dir("./stock"))
 	http.Handle("/", fs)
 
-	log.Println("Listening onn :8080...")
+	log.Println("Listening onn :8081...")
 	err := http.ListenAndServe(":8081", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-
+}*/
 
 func testDirectory() { /*
 		filess, err := ioutil.ReadDir("./stock")
