@@ -5,26 +5,26 @@ package graph
 
 import (
 	"context"
-	"fmt"
-	"math/rand"
-
 	"github.com/ipreferwater/netflikss-golang/graph/generated"
 	"github.com/ipreferwater/netflikss-golang/graph/model"
 	"github.com/ipreferwater/netflikss-golang/organizer"
 )
 
+//todo create a serie
 func (r *mutationResolver) CreateSerie(ctx context.Context, input model.InputSerie) (*model.Serie, error) {
-	//we should trigger creation from files
 	serie := &model.Serie{
-		ID:    fmt.Sprintf("T%d", rand.Int()),
 		Label: "fake",
 	}
+	return serie, nil
+}
+
+func (r *mutationResolver) BuildSeriesFromInfo(ctx context.Context, input *bool) (bool, error) {
 	series := organizer.ReadAllInside()
 	for idx := range series {
 		r.series = append(r.series, &series[idx])
 	}
-	
-	return serie, nil
+
+	return true, nil
 }
 
 func (r *queryResolver) Series(ctx context.Context) ([]*model.Serie, error) {
