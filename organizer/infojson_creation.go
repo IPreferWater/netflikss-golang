@@ -50,7 +50,7 @@ func BuildInfoJSONFile(){
 			serieToCreate.Seasons=seasonsToCreate
 
 			file, _ := json.MarshalIndent(serieToCreate, "", " ")
-			_ = ioutil.WriteFile("info.json", file, 0644)
+			_ = ioutil.WriteFile(infoJSONPath, file, 0644)
 		}
 	}
 }
