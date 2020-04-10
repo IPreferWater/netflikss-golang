@@ -26,8 +26,9 @@ func main() {
 		//AllowedOrigins: []string{"Access-Control-Allow-Origin", "*"},
 		AllowedOrigins: []string{"http://localhost:64594", "*"},
 	})
-	http.Handle("/", c.Handler(playground.Handler("GraphQL playground", "/query")))
+	http.Handle("/playground", c.Handler(playground.Handler("GraphQL playground", "/query")))
 	http.Handle("/query", c.Handler(srv))
+	http.Handle("/", http.FileServer(http.Dir("./stock")))
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
