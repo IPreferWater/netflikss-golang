@@ -1,9 +1,7 @@
 .idea
 .DS_Store
 netflikss-golang
-# don't add videos
-stock/*.mp4
-stock/*.mkv
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
