@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"html"
 	"log"
 	"net/http"
 	"os"
@@ -28,7 +30,10 @@ func main() {
 	})
 	http.Handle("/playground", c.Handler(playground.Handler("GraphQL playground", "/query")))
 	http.Handle("/query", c.Handler(srv))
-	http.Handle("/", http.FileServer(http.Dir("./stock")))
+	http.Handle("/", http.FileServer(http.Dir("/")))
+	http.HandleFunc("/stock", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
+	})
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
