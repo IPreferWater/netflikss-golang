@@ -1,7 +1,0 @@
-{
-  "genre": "",
-  "type" : [
-    {"id": "horror", "label": "horreur"},
-    {"id": "fantasy", "label": "fantastique"}
-  ]
-}
