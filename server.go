@@ -1,8 +1,8 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"html"
 	"log"
 	"net/http"
 	"os"
@@ -10,6 +10,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/ipreferwater/netflikss-golang/configuration"
 	"github.com/ipreferwater/netflikss-golang/graph"
 	"github.com/ipreferwater/netflikss-golang/graph/generated"
 	"github.com/rs/cors"
@@ -38,10 +39,29 @@ func main() {
 	http.Handle("/query", c.Handler(srv))
 	http.Handle("/usb", http.FileServer(http.Dir("/dev")))
 	http.Handle("/", http.FileServer(http.Dir(user.HomeDir)))
-	http.HandleFunc("/stock", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
-	})
-
+	http.HandleFunc("/stockpath", stockPath)
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
+}
+
+func stockPath(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	
+	switch r.Method {
+		case "GET":     
+		configuration := configuration.GetConfigurationByteFormat()
+		w.Write(configuration)
+
+		case "POST":
+		newConfiguration := configuration.Configuration{}
+		err := json.NewDecoder(r.Body).Decode(&newConfiguration)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		configuration.SetConfiguration(newConfiguration)
+		default:
+			fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
+		}
 }
