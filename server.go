@@ -44,16 +44,21 @@ func main() {
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "http://localhost:64594")
+}
+
 func stockPath(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
-	
+	enableCors(&w)
+
 	switch r.Method {
-		case "GET":     
+	case "GET":
 		configuration := configuration.GetConfigurationByteFormat()
 		w.Write(configuration)
 
-		case "POST":
+	case "POST":
 		newConfiguration := configuration.Configuration{}
 		err := json.NewDecoder(r.Body).Decode(&newConfiguration)
 		if err != nil {
@@ -61,7 +66,7 @@ func stockPath(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		configuration.SetConfiguration(newConfiguration)
-		default:
-			fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
-		}
+	default:
+		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
+	}
 }
