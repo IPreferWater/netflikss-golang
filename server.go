@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -89,14 +90,11 @@ func directoriesList(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	enableCors(&w)
-	var s string
-	err := json.NewDecoder(r.Body).Decode(&s)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	path := filepath.Join(organizer.FileServerPath, s)
-	println(path)
+	
+	var b bytes.Buffer
+	b.ReadFrom(r.Body)
+	pathToExplore := b.String()
+	path := filepath.Join(organizer.FileServerPath, pathToExplore)
 
 	listDirectoriesName := organizer.GetAllDirectoriesName(path)
 	jsonListDirectoriesName, err := json.Marshal(listDirectoriesName)
