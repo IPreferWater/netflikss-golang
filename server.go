@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/user"
+	"path/filepath"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -32,7 +33,12 @@ func main() {
 
 	//init the path from config
 	configuration := configuration.ReadConfigurationFile()
-	organizer.CurrentStockPath = configuration.StockPath
+	if configuration.StockPath == "" {
+		organizer.CurrentStockPath = user.HomeDir
+	}else {
+		organizer.CurrentStockPath = configuration.StockPath
+	}
+
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 
@@ -44,9 +50,11 @@ func main() {
 	http.Handle("/usb", http.FileServer(http.Dir("/dev")))
 	http.Handle("/", http.FileServer(http.Dir(user.HomeDir)))
 	http.HandleFunc("/stockpath", stockPath)
+	http.HandleFunc("/directorieslist", directoriesList)
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
+
 
 func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "http://localhost:64594")
@@ -74,4 +82,27 @@ func stockPath(w http.ResponseWriter, r *http.Request) {
 	default:
 		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
 	}
+}
+
+func directoriesList(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	enableCors(&w)
+	var s string
+	err := json.NewDecoder(r.Body).Decode(&s)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	path := filepath.Join(organizer.CurrentStockPath, s)
+	println(path)
+
+	 listDirectoriesName := organizer.GetAllDirectoriesName(path)
+	 jsonListDirectoriesName, err := json.Marshal(listDirectoriesName)
+
+	 if err != nil {
+		http.Error(w, err.Error(), http.StatusConflict)
+		return
+	 }
+	 w.Write(jsonListDirectoriesName)
 }

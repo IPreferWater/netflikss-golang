@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	//"os/user"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -50,6 +51,18 @@ func getAllDirectories(path string) []os.FileInfo {
 		log.Fatal(err)
 	}
 	return filterByDirectory(files)
+}
+
+//TODO: we loop 2 time, to improve
+func GetAllDirectoriesName(path string) []string {
+
+	listDirectoryNames := make([]string, 0)
+
+	directories := getAllDirectories(path)
+	for _, directory := range directories {
+		listDirectoryNames = append(listDirectoryNames, directory.Name())
+	}
+	return listDirectoryNames;
 }
 
 func filterByDirectory(files []os.FileInfo) []os.FileInfo {

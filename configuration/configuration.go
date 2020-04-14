@@ -10,6 +10,7 @@ import (
 //Configuration todo doc of configuration
 type Configuration struct {
 	StockPath string `json:"stockPath"`
+	CurrentPath string `json:"currentPath"`
 }
 
 func GetConfigurationByteFormat() []byte {
