@@ -33,18 +33,13 @@ func main() {
 
 	//init the path from config
 	configuration := configuration.ReadConfigurationFile()
-	if configuration.StockPath == "" {
-		organizer.StockPath = user.HomeDir
-	} else {
-		organizer.StockPath = configuration.StockPath
-	}
+	organizer.StockPath = configuration.StockPath
 
 	if configuration.FileServerPath == "" {
 		organizer.FileServerPath = user.HomeDir
 	} else {
 		organizer.FileServerPath = configuration.FileServerPath
 	}
-
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 
@@ -60,7 +55,6 @@ func main() {
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
-
 
 func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "http://localhost:64594")
@@ -101,15 +95,15 @@ func directoriesList(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	path := filepath.Join(organizer.StockPath, s)
+	path := filepath.Join(organizer.FileServerPath, s)
 	println(path)
 
-	 listDirectoriesName := organizer.GetAllDirectoriesName(path)
-	 jsonListDirectoriesName, err := json.Marshal(listDirectoriesName)
+	listDirectoriesName := organizer.GetAllDirectoriesName(path)
+	jsonListDirectoriesName, err := json.Marshal(listDirectoriesName)
 
-	 if err != nil {
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusConflict)
 		return
-	 }
-	 w.Write(jsonListDirectoriesName)
+	}
+	w.Write(jsonListDirectoriesName)
 }
