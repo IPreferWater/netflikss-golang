@@ -13,6 +13,7 @@ import (
 	"github.com/ipreferwater/netflikss-golang/configuration"
 	"github.com/ipreferwater/netflikss-golang/graph"
 	"github.com/ipreferwater/netflikss-golang/graph/generated"
+	"github.com/ipreferwater/netflikss-golang/organizer"
 	"github.com/rs/cors"
 )
 
@@ -29,10 +30,13 @@ func main() {
 		panic(err)
 	}
 
+	//init the path from config
+	configuration := configuration.ReadConfigurationFile()
+	organizer.CurrentStockPath = configuration.StockPath
+
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 
 	c := cors.New(cors.Options{
-		//AllowedOrigins: []string{"Access-Control-Allow-Origin", "*"},
 		AllowedOrigins: []string{"http://localhost:64594", "*"},
 	})
 	http.Handle("/playground", c.Handler(playground.Handler("GraphQL playground", "/query")))
@@ -55,8 +59,9 @@ func stockPath(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "GET":
-		configuration := configuration.GetConfigurationByteFormat()
-		w.Write(configuration)
+		/*configuration := configuration.GetConfigurationByteFormat()
+		w.Write(configuration)*/
+		w.Write([]byte(organizer.CurrentStockPath))
 
 	case "POST":
 		newConfiguration := configuration.Configuration{}

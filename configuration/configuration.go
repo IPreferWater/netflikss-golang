@@ -2,6 +2,7 @@ package configuration
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 )
@@ -19,19 +20,20 @@ func GetConfigurationByteFormat() []byte {
 	}
 	return content
 }
-func ReadConfigurationFile() []byte {
 
-	content, err := ioutil.ReadFile("configuration.json")
+func ReadConfigurationFile() Configuration {
+
+	configurationByte, err := ioutil.ReadFile("configuration.json")
 	if err != nil {
 		log.Fatal(err)
 	}
-	/*configuration := Configuration{}
-	err = json.Unmarshal(content, &configuration)
+	configuration := Configuration{}
+	err = json.Unmarshal(configurationByte, &configuration)
 	if err != nil {
-		fmt.Printf("Failed to unmarshal content %s, the error is %v", string(content), err)
-	}*/
+		fmt.Printf("Failed to unmarshal content %s, the error is %v", string(configurationByte), err)
+	}
 
-	return content
+	return configuration
 }
 
 func SetConfiguration(configuration Configuration) {
