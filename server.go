@@ -1,17 +1,14 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/user"
-	"path/filepath"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/ipreferwater/netflikss-golang/api"
 	"github.com/ipreferwater/netflikss-golang/configuration"
 	"github.com/ipreferwater/netflikss-golang/graph"
 	"github.com/ipreferwater/netflikss-golang/graph/generated"
@@ -38,8 +35,10 @@ func main() {
 
 	if configuration.FileServerPath == "" {
 		organizer.FileServerPath = user.HomeDir
+		print("set " + organizer.FileServerPath)
 	} else {
 		organizer.FileServerPath = configuration.FileServerPath
+		print("set " + organizer.FileServerPath)
 	}
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
@@ -50,58 +49,14 @@ func main() {
 	http.Handle("/playground", c.Handler(playground.Handler("GraphQL playground", "/query")))
 	http.Handle("/query", c.Handler(srv))
 	http.Handle("/usb", http.FileServer(http.Dir("/dev")))
-	http.Handle("/", http.FileServer(http.Dir(configuration.FileServerPath)))
-	http.HandleFunc("/stockpath", stockPath)
-	http.HandleFunc("/directorieslist", directoriesList)
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	http.Handle("/", http.FileServer(http.Dir(organizer.FileServerPath)))
+	http.Handle("/stockpath", c.Handler(http.HandlerFunc(api.StockPath)))
+	http.Handle("/directorieslist", c.Handler(http.HandlerFunc(api.DirectoriesList)))
+
+	log.Printf("connect to http://localhost:%s/", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
-func enableCors(w *http.ResponseWriter) {
-	(*w).Header().Set("Access-Control-Allow-Origin", "http://localhost:64594")
-}
 
-func stockPath(w http.ResponseWriter, r *http.Request) {
 
-	w.Header().Set("Content-Type", "application/json")
-	enableCors(&w)
 
-	switch r.Method {
-	case "GET":
-		/*configuration := configuration.GetConfigurationByteFormat()
-		w.Write(configuration)*/
-		w.Write([]byte(organizer.StockPath))
-
-	case "POST":
-		//TODO: we update just the config.json, not the global variable
-		newConfiguration := configuration.Configuration{}
-		err := json.NewDecoder(r.Body).Decode(&newConfiguration)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-		configuration.SetConfiguration(newConfiguration)
-	default:
-		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
-	}
-}
-
-func directoriesList(w http.ResponseWriter, r *http.Request) {
-
-	w.Header().Set("Content-Type", "application/json")
-	enableCors(&w)
-	
-	var b bytes.Buffer
-	b.ReadFrom(r.Body)
-	pathToExplore := b.String()
-	path := filepath.Join(organizer.FileServerPath, pathToExplore)
-
-	listDirectoriesName := organizer.GetAllDirectoriesName(path)
-	jsonListDirectoriesName, err := json.Marshal(listDirectoriesName)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusConflict)
-		return
-	}
-	w.Write(jsonListDirectoriesName)
-}
