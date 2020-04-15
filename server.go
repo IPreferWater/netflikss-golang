@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"os/user"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -24,22 +23,7 @@ func main() {
 		port = defaultPort
 	}
 
-	user, err := user.Current()
-	if err != nil {
-		panic(err)
-	}
-
-	//init the path from config
-	configuration := configuration.ReadConfigurationFile()
-	organizer.StockPath = configuration.StockPath
-
-	if configuration.FileServerPath == "" {
-		organizer.FileServerPath = user.HomeDir
-		print("set " + organizer.FileServerPath)
-	} else {
-		organizer.FileServerPath = configuration.FileServerPath
-		print("set " + organizer.FileServerPath)
-	}
+	configuration.InitGlobalVariable()
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 

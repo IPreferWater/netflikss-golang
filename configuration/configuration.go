@@ -5,12 +5,37 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os/user"
+
+	"github.com/ipreferwater/netflikss-golang/organizer"
 )
 
 //Configuration todo doc of configuration
 type Configuration struct {
 	StockPath string `json:"stockPath"`
 	FileServerPath string `json:"fileServerPath"`
+}
+
+func InitGlobalVariable(){
+
+	//TODO: we should init this only once
+	user, err := user.Current()
+	if err != nil {
+		panic(err)
+	}//end TODO
+	
+		//init the path from config
+		configuration := ReadConfigurationFile()
+		organizer.StockPath = configuration.StockPath
+	
+		if configuration.FileServerPath == "" {
+			organizer.FileServerPath = user.HomeDir
+			print("set " + organizer.FileServerPath)
+		} else {
+			organizer.FileServerPath = configuration.FileServerPath
+			print("set " + organizer.FileServerPath)
+		}
+
 }
 
 func GetConfigurationByteFormat() []byte {

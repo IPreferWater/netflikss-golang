@@ -22,7 +22,7 @@ func StockPath(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(organizer.StockPath))
 
 	case "POST":
-		//TODO: we update just the config.json, not the global variable
+		//TODO: the problem is we only send stockPath and not fileServerPath, so fileServerPath will be erased with empty value
 		newConfiguration := configuration.Configuration{}
 		err := json.NewDecoder(r.Body).Decode(&newConfiguration)
 		if err != nil {
@@ -30,6 +30,7 @@ func StockPath(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		configuration.SetConfiguration(newConfiguration)
+		configuration.InitGlobalVariable()
 	default:
 		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
 	}
