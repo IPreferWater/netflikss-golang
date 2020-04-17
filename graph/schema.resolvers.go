@@ -5,12 +5,12 @@ package graph
 
 import (
 	"context"
+
 	"github.com/ipreferwater/netflikss-golang/graph/generated"
 	"github.com/ipreferwater/netflikss-golang/graph/model"
 	"github.com/ipreferwater/netflikss-golang/organizer"
 )
 
-//todo create a serie
 func (r *mutationResolver) CreateSerie(ctx context.Context, input model.InputSerie) (*model.Serie, error) {
 	serie := &model.Serie{
 		Label: "fake",
@@ -23,6 +23,12 @@ func (r *mutationResolver) BuildSeriesFromInfo(ctx context.Context, input *bool)
 	for idx := range series {
 		r.series = append(r.series, &series[idx])
 	}
+
+	return true, nil
+}
+
+func (r *mutationResolver) CreateInfoJSON(ctx context.Context, input *bool) (bool, error) {
+	organizer.BuildInfoJSONFile()
 
 	return true, nil
 }
