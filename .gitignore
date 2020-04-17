@@ -1,6 +1,11 @@
 .idea
 .DS_Store
 netflikss-golang
+.vscode
+
+#generated file graphql
+graph/generated/*
+graph/model/*
 
 # Binaries for programs and plugins
 *.exe
