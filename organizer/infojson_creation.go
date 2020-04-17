@@ -12,17 +12,18 @@ import (
 
 //BuildInfoJSONFile build info.json files
 func BuildInfoJSONFile() {
-	directories := getAllDirectories(stockPath)
+	path := filepath.Join(FileServerPath, StockPath)
+	directories := getAllDirectories(path)
 
 	for _, directory := range directories {
-		infoJSONPath := filepath.Join(stockPath, directory.Name(), infoJSONFileName)
+		infoJSONPath := filepath.Join(path, directory.Name(), infoJSONFileName)
 		serieToCreate := model.Serie{
 			DirectoryName: directory.Name(),
 			Label:         directory.Name(),
 		}
 
 		if !fileExists(infoJSONPath) {
-			seasonDirPath := filepath.Join(stockPath, directory.Name())
+			seasonDirPath := filepath.Join(path, directory.Name())
 
 			seasonsDirs := getAllDirectories(seasonDirPath)
 			seasonsToCreate := make([]*model.Season, 0)
@@ -31,7 +32,7 @@ func BuildInfoJSONFile() {
 				fileName := seasonDir.Name()
 
 				//fmt.Printf("? %s \n",seasonDir.Name())
-				episodesPath := filepath.Join(stockPath, directory.Name(), fileName)
+				episodesPath := filepath.Join(path, directory.Name(), fileName)
 				episodes := getAllFiles(episodesPath)
 				episodeCreated := createAllEpisode(episodes)
 

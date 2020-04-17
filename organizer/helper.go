@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	//"os/user"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -15,7 +14,6 @@ import (
 )
 
 const (
-	stockPath        string = "../stock"
 	infoJSONFileName string = "info.json"
 )
 
@@ -26,15 +24,6 @@ func fileExists(filename string) bool {
 		return false
 	}
 	return !info.IsDir()
-}
-
-//TODO: we need to delete this method
-func getAllInStockFolder() []os.FileInfo {
-	files, err := ioutil.ReadDir(stockPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return files
 }
 
 func getAllFiles(path string) []os.FileInfo {
@@ -62,11 +51,11 @@ func GetAllDirectoriesName(path string) []string {
 	for _, directory := range directories {
 		listDirectoryNames = append(listDirectoryNames, directory.Name())
 	}
-	return listDirectoryNames;
+	return listDirectoryNames
 }
 
+//filterByDirectory filter to get only the directories
 func filterByDirectory(files []os.FileInfo) []os.FileInfo {
-	//filter to get only the directories
 	directories := make([]os.FileInfo, 0)
 	for _, file := range files {
 		if file.IsDir() {
@@ -78,12 +67,13 @@ func filterByDirectory(files []os.FileInfo) []os.FileInfo {
 
 //ReadAllInside read all info.json files
 func ReadAllInside() []model.Serie {
-	files := getAllInStockFolder()
-	filtered := filterByDirectory(files)
+	path := filepath.Join(FileServerPath, StockPath)
+	files := getAllDirectories(path)
+
 	series := make([]model.Serie, 0)
 
-	for _, directory := range filtered {
-		infoJSONPath := filepath.Join(stockPath, directory.Name(), infoJSONFileName)
+	for _, directory := range files {
+		infoJSONPath := filepath.Join(path, directory.Name(), infoJSONFileName)
 		if fileExists(infoJSONPath) {
 			content, err := ioutil.ReadFile(infoJSONPath)
 			if err != nil {
