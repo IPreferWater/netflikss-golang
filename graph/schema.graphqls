@@ -1,6 +1,7 @@
 type Serie {
   	directoryName: String!
 	label: String!
+	stockPath : String!
 	seasons: [Season!]
   }
 
@@ -17,8 +18,14 @@ type Episode {
 	label: String!
 }
 
+type Data {
+	series : [Serie!]!
+	configuration : Configuration!
+}
+
 type Query {
   series: [Serie!]!
+  netflikss : Data!
 }
 
 input InputSerie {

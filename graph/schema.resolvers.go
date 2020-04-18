@@ -37,6 +37,17 @@ func (r *queryResolver) Series(ctx context.Context) ([]*model.Serie, error) {
 	return r.series, nil
 }
 
+func (r *queryResolver) Netflikss(ctx context.Context) (*model.Data, error) {
+	configuration := &model.Configuration{
+		FileServerPath: organizer.FileServerPath,
+	}
+	data := &model.Data{
+		Series:        r.series,
+		Configuration: configuration,
+	}
+	return data, nil
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
