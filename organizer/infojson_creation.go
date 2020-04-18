@@ -20,6 +20,7 @@ func BuildInfoJSONFile() {
 		serieToCreate := model.Serie{
 			DirectoryName: directory.Name(),
 			Label:         directory.Name(),
+			StockPath:     StockPath,
 		}
 
 		if !fileExists(infoJSONPath) {
