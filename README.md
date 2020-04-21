@@ -5,17 +5,21 @@ backend for netflikss
 go run github.com/99designs/gqlgen generate
 
 # example query graphql/playground
+
 mutation buildSeries {
   buildSeriesFromInfo(input:true) 
 }
 
-query createInfoJson{
+mutation createInfoJson{
   createInfoJson(input:true)
 }
 
-query findSerie {
-  	series{
+query data {
+  netflikss{
+      	series{
       label,
+          stockPath,
+          img,
       seasons{
         number,
         label, 
@@ -28,6 +32,5 @@ query findSerie {
       	}
       }
     }
+  }
 }
-
-
