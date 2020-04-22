@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-
 	"github.com/ipreferwater/netflikss-golang/graph/model"
 )
 
@@ -17,22 +16,29 @@ func BuildInfoJSONFile() {
 
 	for _, directory := range directories {
 		infoJSONPath := filepath.Join(path, directory.Name(), infoJSONFileName)
-		serieToCreate := model.Serie{
-			DirectoryName: directory.Name(),
-			Label:         directory.Name(),
-			StockPath:     StockPath,
-		}
+
 
 		if !fileExists(infoJSONPath) {
+
 			seasonDirPath := filepath.Join(path, directory.Name())
 
-			seasonsDirs := getAllDirectories(seasonDirPath)
+			allFiles := getAllFiles(seasonDirPath)
+			seasonsDirs := filterByDirectory(allFiles)
+
+			img := findImage(allFiles);
+			serieToCreate := model.Serie{
+				DirectoryName: directory.Name(),
+				Label:         directory.Name(),
+				StockPath:     StockPath,
+				Img: img,
+			}
+
+
 			seasonsToCreate := make([]*model.Season, 0)
 
 			for _, seasonDir := range seasonsDirs {
 				fileName := seasonDir.Name()
 
-				//fmt.Printf("? %s \n",seasonDir.Name())
 				episodesPath := filepath.Join(path, directory.Name(), fileName)
 				episodes := getAllFiles(episodesPath)
 				episodeCreated := createAllEpisode(episodes)
@@ -40,7 +46,6 @@ func BuildInfoJSONFile() {
 				guessNumber := guessNumber(fileName)
 				number, _ := strconv.Atoi(guessNumber)
 
-				//TODO: do we really need a label on the season ?
 				newSeason := model.Season{
 					DirectoryName: seasonDir.Name(),
 					Number:        number,
@@ -59,10 +64,18 @@ func BuildInfoJSONFile() {
 	}
 }
 
+func findImage(files []os.FileInfo) string{
+	allImages := filterByImg(files)
+	if len(allImages) < 0 {
+		//no image found
+		return "";
+	  }
+return allImages[0].Name();
+}
+
 func createAllEpisode(episodes []os.FileInfo) []*model.Episode {
 	episodesToCreate := make([]*model.Episode, 0)
 	for _, episode := range episodes {
-		//fmt.Printf("? %s \n",episode.Name())
 		fileName := episode.Name()
 
 		guessNumber := guessNumber(fileName)

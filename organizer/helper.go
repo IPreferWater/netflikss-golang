@@ -65,6 +65,17 @@ func filterByDirectory(files []os.FileInfo) []os.FileInfo {
 	return directories
 }
 
+func filterByImg(files []os.FileInfo) []os.FileInfo {
+	directories := make([]os.FileInfo, 0)
+	for _, file := range files {
+
+		if filepath.Ext(file.Name()) == ".jpg" {
+			directories = append(directories, file)
+		}
+	}
+	return directories
+}
+
 //ReadAllInside read all info.json files
 func ReadAllInside() []model.Serie {
 	path := filepath.Join(FileServerPath, StockPath)
