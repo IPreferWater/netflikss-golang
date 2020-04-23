@@ -1,3 +1,10 @@
 type Configuration {
 	fileServerPath: String!
+	stockPath:      String! 
+	serverConfiguration: ServerConfiguration!
+}
+
+type ServerConfiguration {
+	port: String!
+	allowedOrigin: String!
 }
