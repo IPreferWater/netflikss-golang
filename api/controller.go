@@ -23,6 +23,7 @@ func StockPath(w http.ResponseWriter, r *http.Request) {
 
 	case "POST":
 		//TODO: the problem is we only send stockPath and not fileServerPath, so fileServerPath will be erased with empty value
+		// we need to ensure the validation of the body
 		newConfiguration := configuration.Configuration{}
 		err := json.NewDecoder(r.Body).Decode(&newConfiguration)
 		if err != nil {

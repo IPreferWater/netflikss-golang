@@ -23,6 +23,7 @@ func main() {
 		port = defaultPort
 	}
 
+	configuration.initUserVariable()
 	configuration.InitGlobalVariable()
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
