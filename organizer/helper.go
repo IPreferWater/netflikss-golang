@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/ipreferwater/netflikss-golang/configuration"
 	"github.com/ipreferwater/netflikss-golang/graph/model"
 )
 
@@ -79,7 +80,7 @@ func filterByImg(files []os.FileInfo) []os.FileInfo {
 
 //ReadAllInside read all info.json files
 func ReadAllInside() []model.Serie {
-	path := filepath.Join(FileServerPath, StockPath)
+	path := configuration.GetFileAndStockPath()
 	files := getAllDirectories(path)
 
 	series := make([]model.Serie, 0)

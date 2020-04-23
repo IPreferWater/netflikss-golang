@@ -6,12 +6,14 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+
+	"github.com/ipreferwater/netflikss-golang/configuration"
 	"github.com/ipreferwater/netflikss-golang/graph/model"
 )
 
 //BuildInfoJSONFile build info.json files
 func BuildInfoJSONFile() {
-	path := filepath.Join(FileServerPath, StockPath)
+	path := configuration.GetFileAndStockPath()
 	directories := getAllDirectories(path)
 
 	for _, directory := range directories {
@@ -29,7 +31,7 @@ func BuildInfoJSONFile() {
 			serieToCreate := model.Serie{
 				DirectoryName: directory.Name(),
 				Label:         directory.Name(),
-				StockPath:     StockPath,
+				StockPath:     configuration.Configuration.StockPath,
 				Img: img,
 			}
 

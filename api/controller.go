@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/ipreferwater/netflikss-golang/configuration"
+	"github.com/ipreferwater/netflikss-golang/graph/model"
 	"github.com/ipreferwater/netflikss-golang/organizer"
 )
 
@@ -17,12 +18,12 @@ func StockPath(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "GET":
-		w.Write([]byte(organizer.StockPath))
+		w.Write([]byte(configuration.Configuration.StockPath))
 
 	case "POST":
 		//TODO: the problem is we only send stockPath and not fileServerPath, so fileServerPath will be erased with empty value
 		// we need to ensure the validation of the body
-		newConfiguration := configuration.Configuration{}
+		newConfiguration := model.Configuration{}
 		err := json.NewDecoder(r.Body).Decode(&newConfiguration)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -42,7 +43,7 @@ func DirectoriesList(w http.ResponseWriter, r *http.Request) {
 	var b bytes.Buffer
 	b.ReadFrom(r.Body)
 	pathToExplore := b.String()
-	path := filepath.Join(organizer.FileServerPath, pathToExplore)
+	path := filepath.Join(configuration.Configuration.FileServerPath, pathToExplore)
 
 	listDirectoriesName := organizer.GetAllDirectoriesName(path)
 	jsonListDirectoriesName, err := json.Marshal(listDirectoriesName)

@@ -6,17 +6,13 @@ import (
 	"io/ioutil"
 	"log"
 	"os/user"
+	"path/filepath"
 
-	"github.com/ipreferwater/netflikss-golang/organizer"
+	"github.com/ipreferwater/netflikss-golang/graph/model"
 )
 
-//the configuration will be handle by graphql in the futur,
-// the object used will be the generated one
-type Configuration struct {
-	StockPath      string `json:"stockPath"`
-	FileServerPath string `json:"fileServerPath"`
-	Port           string `json:"port"`
-	AllowedOrigin  string `json:"allowedOrigin"`
+func GetFileAndStockPath() string {
+	return filepath.Join(Configuration.FileServerPath, Configuration.StockPath)
 }
 
 //InitUserVariable init the user to have the directory Path
@@ -25,34 +21,37 @@ func InitUserVariable() {
 	if err != nil {
 		panic(err)
 	}
-	organizer.User = user
+	User = user
 }
 
 func InitGlobalVariable() {
 	//init the path from config
 	configuration := ReadConfigurationFile()
-	organizer.StockPath = configuration.StockPath
-	organizer.Port = configuration.Port
-	organizer.AllowedOrigin = configuration.AllowedOrigin
+	Configuration.ServerConfiguration = &model.ServerConfiguration{}
+
+	Configuration.StockPath = configuration.StockPath
+	Configuration.ServerConfiguration.Port = configuration.ServerConfiguration.Port
+	Configuration.ServerConfiguration.AllowedOrigin = configuration.ServerConfiguration.AllowedOrigin
 
 	if configuration.FileServerPath == "" {
-		organizer.FileServerPath = organizer.User.HomeDir
+		Configuration.FileServerPath = User.HomeDir
 
-		print("set " + organizer.FileServerPath)
+		print("set " + Configuration.FileServerPath)
 	} else {
-		organizer.FileServerPath = configuration.FileServerPath
-		print("set " + organizer.FileServerPath)
+		Configuration.FileServerPath = configuration.FileServerPath
+		print("set " + Configuration.FileServerPath)
 	}
 
 }
 
-func ReadConfigurationFile() Configuration {
+func ReadConfigurationFile() model.Configuration {
 
 	configurationByte, err := ioutil.ReadFile("configuration.json")
 	if err != nil {
+		fmt.Println("error can't parse tbhe configuration.js")
 		log.Fatal(err)
 	}
-	configuration := Configuration{}
+	configuration := model.Configuration{}
 	err = json.Unmarshal(configurationByte, &configuration)
 	if err != nil {
 		fmt.Printf("Failed to unmarshal content %s, the error is %v", string(configurationByte), err)
@@ -61,8 +60,7 @@ func ReadConfigurationFile() Configuration {
 	return configuration
 }
 
-func SetConfiguration(configuration Configuration) {
-
+func SetConfiguration(configuration model.Configuration) {
 	file, _ := json.MarshalIndent(configuration, "", " ")
 	_ = ioutil.WriteFile("configuration.json", file, 0644)
 }
