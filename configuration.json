@@ -1,6 +1,8 @@
 {
  "stockPath": "/Movies/example_netflikss",
  "fileServerPath": "",
- "port":"7171",
- "allowedOrigins":"http://localhost:64594"
+ "serverConfiguration" : {
+    "port":"7171",
+    "allowedOrigin":"http://localhost:64594"
+ }
 }
