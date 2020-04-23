@@ -15,6 +15,8 @@ import (
 type Configuration struct {
 	StockPath      string `json:"stockPath"`
 	FileServerPath string `json:"fileServerPath"`
+	Port           string `json:"port"`
+	AllowedOrigin  string `json:"allowedOrigin"`
 }
 
 //InitUserVariable init the user to have the directory Path
@@ -31,6 +33,8 @@ func InitGlobalVariable() {
 	//init the path from config
 	configuration := ReadConfigurationFile()
 	organizer.StockPath = configuration.StockPath
+	organizer.Port = configuration.Port
+	organizer.AllowedOrigin = configuration.AllowedOrigin
 
 	if configuration.FileServerPath == "" {
 		organizer.FileServerPath = organizer.User.HomeDir

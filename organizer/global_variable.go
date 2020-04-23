@@ -7,3 +7,5 @@ import (
 var StockPath string
 var FileServerPath string
 var User *user.User
+var Port string
+var AllowedOrigin string

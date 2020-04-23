@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -15,21 +14,14 @@ import (
 	"github.com/rs/cors"
 )
 
-const defaultPort = "7171"
-
 func main() {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = defaultPort
-	}
-
 	configuration.InitUserVariable()
 	configuration.InitGlobalVariable()
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 
 	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:64594", "*"},
+		AllowedOrigins: []string{organizer.AllowedOrigin, "*"},
 	})
 	http.Handle("/playground", c.Handler(playground.Handler("GraphQL playground", "/query")))
 	http.Handle("/query", c.Handler(srv))
@@ -38,9 +30,6 @@ func main() {
 	http.Handle("/stockpath", c.Handler(http.HandlerFunc(api.StockPath)))
 	http.Handle("/directorieslist", c.Handler(http.HandlerFunc(api.DirectoriesList)))
 
-	log.Printf("connect to http://localhost:%s/", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Printf("connect to http://localhost:%s/", organizer.Port)
+	log.Fatal(http.ListenAndServe(":"+organizer.Port, nil))
 }
-
-
-
