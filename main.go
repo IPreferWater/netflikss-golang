@@ -1,48 +1,46 @@
 package main
 
-/*func main() {
-	//testDirectory()
-	//createInfoJson()
+import (
+	"log"
+	"net/http"
+	"os"
 
-	go func() {
-		//graphql.StartServerGraphQL()
-	}()
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/ipreferwater/netflikss-golang/api"
+	"github.com/ipreferwater/netflikss-golang/configuration"
+	"github.com/ipreferwater/netflikss-golang/graph"
+	"github.com/ipreferwater/netflikss-golang/graph/generated"
+	"github.com/ipreferwater/netflikss-golang/organizer"
+	"github.com/rs/cors"
+)
 
-	fs := http.FileServer(http.Dir("./stock"))
-	http.Handle("/", fs)
+const defaultPort = "7171"
 
-	log.Println("Listening onn :8081...")
-	err := http.ListenAndServe(":8081", nil)
-	if err != nil {
-		log.Fatal(err)
+func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = defaultPort
 	}
-}*/
 
-func testDirectory() { /*
-		filess, err := ioutil.ReadDir("./stock")
-		if err != nil {
-			log.Fatal(err)
-		}
+	configuration.InitUserVariable()
+	configuration.InitGlobalVariable()
 
-		for _, f := range filess {
-			if f.IsDir() {
-				fmt.Println(f.Name())
-				 infoJsonFile := "./stock/"+f.Name()+"/info.json"
-				content, err := ioutil.ReadFile(infoJsonFile)
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
 
-				if err != nil {
-					fmt.Println("need to be created:", err)
-					createInfoJson("./stock/"+f.Name())
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"http://localhost:64594", "*"},
+	})
+	http.Handle("/playground", c.Handler(playground.Handler("GraphQL playground", "/query")))
+	http.Handle("/query", c.Handler(srv))
+	http.Handle("/usb", http.FileServer(http.Dir("/dev")))
+	http.Handle("/", http.FileServer(http.Dir(organizer.FileServerPath)))
+	http.Handle("/stockpath", c.Handler(http.HandlerFunc(api.StockPath)))
+	http.Handle("/directorieslist", c.Handler(http.HandlerFunc(api.DirectoriesList)))
 
-					continue
-				}
-				result := organizer.Info{}
-				err = json.Unmarshal(content, &result)
-				if err != nil {
-					fmt.Print("Error:", err)
-					fmt.Print("Failed to unmarshal content %s, the error is %v", string(content), err)
-
-					continue
-				}
-			}*/
+	log.Printf("connect to http://localhost:%s/", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
+
+
+
