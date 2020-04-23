@@ -17,8 +17,6 @@ func StockPath(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "GET":
-		/*configuration := configuration.GetConfigurationByteFormat()
-		w.Write(configuration)*/
 		w.Write([]byte(organizer.StockPath))
 
 	case "POST":
@@ -33,7 +31,7 @@ func StockPath(w http.ResponseWriter, r *http.Request) {
 		configuration.SetConfiguration(newConfiguration)
 		configuration.InitGlobalVariable()
 	default:
-		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
+		fmt.Fprintf(w, "only GET and POST methods are supported.")
 	}
 }
 

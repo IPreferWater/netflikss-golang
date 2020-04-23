@@ -24,8 +24,7 @@ func InitUserVariable() {
 	user, err := user.Current()
 	if err != nil {
 		panic(err)
-	} //end TODO
-
+	}
 	organizer.User = user
 }
 
@@ -45,15 +44,6 @@ func InitGlobalVariable() {
 		print("set " + organizer.FileServerPath)
 	}
 
-}
-
-func GetConfigurationByteFormat() []byte {
-
-	content, err := ioutil.ReadFile("configuration.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-	return content
 }
 
 func ReadConfigurationFile() Configuration {
