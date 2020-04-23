@@ -65,6 +65,7 @@ func filterByDirectory(files []os.FileInfo) []os.FileInfo {
 	return directories
 }
 
+//TODO we should allow more format than only .jpg
 func filterByImg(files []os.FileInfo) []os.FileInfo {
 	directories := make([]os.FileInfo, 0)
 	for _, file := range files {
