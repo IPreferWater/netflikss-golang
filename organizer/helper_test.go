@@ -33,26 +33,3 @@ func TestGuessNumber(t *testing.T) {
 		t.Errorf("6 incorrect, got: %s, want: %s", onlyNumber, "54")
 	}
 }
-func TestReadAllInside(t *testing.T) {
-	//tt()
-
-	allFiles := getAllInStockFolder()
-	lenAllFiles := len(allFiles)
-	if lenAllFiles != 5 {
-		t.Errorf("1 incorrect, got: %d, want: %d", lenAllFiles, 5)
-	}
-
-	filtered := filterByDirectory(allFiles)
-	lenFiltered := len(filtered)
-		if lenFiltered != 3 {
-			t.Errorf("2 incorrect, got: %d, want: %d", lenFiltered, 3)
-		}
-	}
-
-//todelete, just to test the behavior
-func TestTt(t *testing.T) {
-	ReadAllInside()
-	if 1 != 1 {
-		t.Errorf("?")
-	}
-}
