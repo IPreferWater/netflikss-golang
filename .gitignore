@@ -1,15 +1,21 @@
 .idea
 .DS_Store
-# don't add videos
-stock/*.mp4
+netflikss-golang
+.vscode
+
+#generated file graphql
+graph/generated/*
+graph/model/*
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
+*.iml
 
-# Test binary, built with `go test -c`
+# Test binary, built with `go test -ex2_3`
 *.test
 
 # Output of the go coverage tool, specifically when used with LiteIDE
