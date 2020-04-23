@@ -1,8 +1,7 @@
-package configuration
+package di
 
 import (
 	"os/user"
-
 	"github.com/ipreferwater/netflikss-golang/graph/model"
 )
 

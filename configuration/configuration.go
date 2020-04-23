@@ -8,11 +8,12 @@ import (
 	"os/user"
 	"path/filepath"
 
+	"github.com/ipreferwater/netflikss-golang/di"
 	"github.com/ipreferwater/netflikss-golang/graph/model"
 )
 
 func GetFileAndStockPath() string {
-	return filepath.Join(Configuration.FileServerPath, Configuration.StockPath)
+	return filepath.Join(di.Configuration.FileServerPath, di.Configuration.StockPath)
 }
 
 //InitUserVariable init the user to have the directory Path
@@ -21,25 +22,25 @@ func InitUserVariable() {
 	if err != nil {
 		panic(err)
 	}
-	User = user
+	di.User = user
 }
 
 func InitGlobalVariable() {
 	//init the path from config
 	configuration := ReadConfigurationFile()
-	Configuration.ServerConfiguration = &model.ServerConfiguration{}
+	di.Configuration.ServerConfiguration = &model.ServerConfiguration{}
 
-	Configuration.StockPath = configuration.StockPath
-	Configuration.ServerConfiguration.Port = configuration.ServerConfiguration.Port
-	Configuration.ServerConfiguration.AllowedOrigin = configuration.ServerConfiguration.AllowedOrigin
+	di.Configuration.StockPath = configuration.StockPath
+	di.Configuration.ServerConfiguration.Port = configuration.ServerConfiguration.Port
+	di.Configuration.ServerConfiguration.AllowedOrigin = configuration.ServerConfiguration.AllowedOrigin
 
 	if configuration.FileServerPath == "" {
-		Configuration.FileServerPath = User.HomeDir
+		di.Configuration.FileServerPath = di.User.HomeDir
 
-		print("set " + Configuration.FileServerPath)
+		print("set " + di.Configuration.FileServerPath)
 	} else {
-		Configuration.FileServerPath = configuration.FileServerPath
-		print("set " + Configuration.FileServerPath)
+		di.Configuration.FileServerPath = configuration.FileServerPath
+		print("set " + di.Configuration.FileServerPath)
 	}
 
 }

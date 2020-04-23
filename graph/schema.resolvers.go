@@ -6,7 +6,7 @@ package graph
 import (
 	"context"
 
-	"github.com/ipreferwater/netflikss-golang/configuration"
+	"github.com/ipreferwater/netflikss-golang/di"
 	"github.com/ipreferwater/netflikss-golang/graph/generated"
 	"github.com/ipreferwater/netflikss-golang/graph/model"
 	"github.com/ipreferwater/netflikss-golang/organizer"
@@ -40,7 +40,7 @@ func (r *queryResolver) Series(ctx context.Context) ([]*model.Serie, error) {
 
 func (r *queryResolver) Netflikss(ctx context.Context) (*model.Data, error) {
 	configuration := &model.Configuration{
-		FileServerPath: configuration.Configuration.FileServerPath,
+		FileServerPath: di.Configuration.FileServerPath,
 	}
 	data := &model.Data{
 		Series:        r.series,

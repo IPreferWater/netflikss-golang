@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/ipreferwater/netflikss-golang/configuration"
+	"github.com/ipreferwater/netflikss-golang/di"
 	"github.com/ipreferwater/netflikss-golang/graph/model"
 )
 
@@ -19,7 +20,6 @@ func BuildInfoJSONFile() {
 	for _, directory := range directories {
 		infoJSONPath := filepath.Join(path, directory.Name(), infoJSONFileName)
 
-
 		if !fileExists(infoJSONPath) {
 
 			seasonDirPath := filepath.Join(path, directory.Name())
@@ -27,14 +27,13 @@ func BuildInfoJSONFile() {
 			allFiles := getAllFiles(seasonDirPath)
 			seasonsDirs := filterByDirectory(allFiles)
 
-			img := findImage(allFiles);
+			img := findImage(allFiles)
 			serieToCreate := model.Serie{
 				DirectoryName: directory.Name(),
 				Label:         directory.Name(),
-				StockPath:     configuration.Configuration.StockPath,
-				Img: img,
+				StockPath:     di.Configuration.StockPath,
+				Img:           img,
 			}
-
 
 			seasonsToCreate := make([]*model.Season, 0)
 
@@ -66,13 +65,13 @@ func BuildInfoJSONFile() {
 	}
 }
 
-func findImage(files []os.FileInfo) string{
+func findImage(files []os.FileInfo) string {
 	allImages := filterByImg(files)
 	if len(allImages) < 0 {
 		//no image found
-		return "";
-	  }
-return allImages[0].Name();
+		return ""
+	}
+	return allImages[0].Name()
 }
 
 func createAllEpisode(episodes []os.FileInfo) []*model.Episode {
