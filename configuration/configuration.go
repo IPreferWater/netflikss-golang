@@ -10,26 +10,30 @@ import (
 	"github.com/ipreferwater/netflikss-golang/organizer"
 )
 
-//Configuration todo doc of configuration
+//the configuration will be handle by graphql in the futur,
+// the object used will be the generated one
 type Configuration struct {
 	StockPath      string `json:"stockPath"`
 	FileServerPath string `json:"fileServerPath"`
 }
 
-func InitGlobalVariable() {
-
-	//TODO: we should init this only once
+//InitUserVariable init the user to have the directory Path
+func InitUserVariable() {
 	user, err := user.Current()
 	if err != nil {
 		panic(err)
 	} //end TODO
 
+	organizer.User = user
+}
+
+func InitGlobalVariable() {
 	//init the path from config
 	configuration := ReadConfigurationFile()
 	organizer.StockPath = configuration.StockPath
 
 	if configuration.FileServerPath == "" {
-		organizer.FileServerPath = user.HomeDir
+		organizer.FileServerPath = organizer.User.HomeDir
 
 		print("set " + organizer.FileServerPath)
 	} else {
