@@ -25,7 +25,6 @@ type Data {
 }
 
 type Query {
-  series: [Serie!]!
   netflikss : Data!
 }
 

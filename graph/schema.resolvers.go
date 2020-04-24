@@ -27,10 +27,6 @@ func (r *mutationResolver) CreateInfoJSON(ctx context.Context, input *bool) (boo
 	return true, nil
 }
 
-func (r *queryResolver) Series(ctx context.Context) ([]*model.Serie, error) {
-	return r.series, nil
-}
-
 func (r *queryResolver) Netflikss(ctx context.Context) (*model.Data, error) {
 	configuration := &model.Configuration{
 		FileServerPath: di.Configuration.FileServerPath,
