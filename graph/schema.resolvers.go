@@ -53,6 +53,7 @@ func (r *mutationResolver) UpdateConfig(ctx context.Context, input *model.InputC
 	}*/
 
 	configuration.SetConfiguration(copyDiConf)
+	//TODO if we changed the server configuration, we might need to reboot it ?
 
 	return true, nil
 }
