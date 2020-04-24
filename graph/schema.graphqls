@@ -28,11 +28,8 @@ type Query {
   netflikss: Data!
 }
 
-input InputSerie {
-  work: Boolean!
-}
-
 type Mutation {
   buildSeriesFromInfo(input: Boolean): Boolean!
   createInfoJson(input: Boolean): Boolean!
+  updateConfig(input: InputConfiguration): Boolean!
 }

@@ -27,6 +27,28 @@ func (r *mutationResolver) CreateInfoJSON(ctx context.Context, input *bool) (boo
 	return true, nil
 }
 
+func (r *mutationResolver) UpdateConfig(ctx context.Context, input *model.InputConfiguration) (bool, error) {
+
+	var copyDiConf = di.Configuration
+	if input.FileServerPath != nil {
+		copyDiConf.FileServerPath = *input.FileServerPath
+	}
+
+	if input.StockPath != nil {
+		copyDiConf.StockPath = *input.StockPath
+	}
+
+	if input.Port != nil {
+		copyDiConf.ServerConfiguration.Port = *input.Port
+	}
+
+	if input.AllowedOrigin != nil {
+		copyDiConf.ServerConfiguration.AllowedOrigin = *input.AllowedOrigin
+	}
+
+	return true, nil
+}
+
 func (r *queryResolver) Netflikss(ctx context.Context) (*model.Data, error) {
 	configuration := di.Configuration
 

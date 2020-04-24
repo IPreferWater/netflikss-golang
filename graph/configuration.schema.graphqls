@@ -8,3 +8,10 @@ type ServerConfiguration {
 	port: String!
 	allowedOrigin: String!
 }
+
+input InputConfiguration {
+	fileServerPath: String
+	stockPath:      String 
+	port: String
+	allowedOrigin: String
+}
