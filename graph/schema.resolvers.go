@@ -46,7 +46,7 @@ func (r *mutationResolver) UpdateConfig(ctx context.Context, input *model.InputC
 		if organizer.IsPortNumber(*input.Port) {
 			copyDiConf.ServerConfiguration.Port = *input.Port
 		} else {
-			errors = append(errors, "the port number is invalid format")
+			errors = append(errors, fmt.Sprintf("the port number '%s' is invalid format", *input.Port))
 		}
 	}
 
@@ -54,7 +54,7 @@ func (r *mutationResolver) UpdateConfig(ctx context.Context, input *model.InputC
 		if organizer.IsURL(*input.AllowedOrigin) {
 			copyDiConf.ServerConfiguration.AllowedOrigin = *input.AllowedOrigin
 		} else {
-			errors = append(errors, "the allowedOrigin is invalid format")
+			errors = append(errors, fmt.Sprintf("the allowedOrigin '%s' is invalid format", *input.AllowedOrigin))
 		}
 	}
 

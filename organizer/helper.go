@@ -110,11 +110,11 @@ func isNumeric(s string) bool {
 }
 
 func IsPortNumber(s string) bool {
-	number, err := strconv.ParseFloat(s, 64)
+	number, err := strconv.Atoi(s)
 	if err != nil {
 		return false
 	}
-	return number>0 && number<65535
+	return number > 0 && number < 65535
 }
 
 //IsURL tests a string to determine if it is a well-structured url or not.
