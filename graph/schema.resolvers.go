@@ -6,6 +6,7 @@ package graph
 import (
 	"context"
 
+	"github.com/ipreferwater/netflikss-golang/configuration"
 	"github.com/ipreferwater/netflikss-golang/di"
 	"github.com/ipreferwater/netflikss-golang/graph/generated"
 	"github.com/ipreferwater/netflikss-golang/graph/model"
@@ -45,6 +46,13 @@ func (r *mutationResolver) UpdateConfig(ctx context.Context, input *model.InputC
 	if input.AllowedOrigin != nil {
 		copyDiConf.ServerConfiguration.AllowedOrigin = *input.AllowedOrigin
 	}
+
+	//TODO if no value has changed, dont update it
+	/*if copyDiConf == di.Configuration {
+		return false, fmt.Errorf("UpdateConfig won't update because the config received is the same")
+	}*/
+
+	configuration.SetConfiguration(copyDiConf)
 
 	return true, nil
 }
