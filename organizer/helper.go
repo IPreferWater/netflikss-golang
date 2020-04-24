@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -106,6 +107,29 @@ func ReadAllInside() []model.Serie {
 func isNumeric(s string) bool {
 	_, err := strconv.ParseFloat(s, 64)
 	return err == nil
+}
+
+func IsPortNumber(s string) bool {
+	number, err := strconv.ParseFloat(s, 64)
+	if err != nil {
+		return false
+	}
+	return number>0 && number<65535
+}
+
+//IsURL tests a string to determine if it is a well-structured url or not.
+func IsURL(toTest string) bool {
+	_, err := url.ParseRequestURI(toTest)
+	if err != nil {
+		return false
+	}
+
+	u, err := url.Parse(toTest)
+	if err != nil || u.Scheme == "" || u.Host == "" {
+		return false
+	}
+
+	return true
 }
 
 func removeUselessZero(s string) string {

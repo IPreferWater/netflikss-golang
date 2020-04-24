@@ -5,6 +5,8 @@ package graph
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"github.com/ipreferwater/netflikss-golang/configuration"
 	"github.com/ipreferwater/netflikss-golang/di"
@@ -29,8 +31,9 @@ func (r *mutationResolver) CreateInfoJSON(ctx context.Context, input *bool) (boo
 }
 
 func (r *mutationResolver) UpdateConfig(ctx context.Context, input *model.InputConfiguration) (bool, error) {
-
+	var errors []string
 	var copyDiConf = di.Configuration
+
 	if input.FileServerPath != nil {
 		copyDiConf.FileServerPath = *input.FileServerPath
 	}
@@ -40,17 +43,29 @@ func (r *mutationResolver) UpdateConfig(ctx context.Context, input *model.InputC
 	}
 
 	if input.Port != nil {
-		copyDiConf.ServerConfiguration.Port = *input.Port
+		if organizer.IsPortNumber(*input.Port) {
+			copyDiConf.ServerConfiguration.Port = *input.Port
+		} else {
+			errors = append(errors, "the port number is invalid format")
+		}
 	}
 
 	if input.AllowedOrigin != nil {
-		copyDiConf.ServerConfiguration.AllowedOrigin = *input.AllowedOrigin
+		if organizer.IsURL(*input.AllowedOrigin) {
+			copyDiConf.ServerConfiguration.AllowedOrigin = *input.AllowedOrigin
+		} else {
+			errors = append(errors, "the allowedOrigin is invalid format")
+		}
 	}
 
 	//TODO if no value has changed, dont update it
 	/*if copyDiConf == di.Configuration {
 		return false, fmt.Errorf("UpdateConfig won't update because the config received is the same")
 	}*/
+
+	if len(errors) > 0 {
+		return false, fmt.Errorf(strings.Join(errors, ","))
+	}
 
 	configuration.SetConfiguration(copyDiConf)
 	//TODO if we changed the server configuration, we might need to reboot it ?
