@@ -12,13 +12,6 @@ import (
 	"github.com/ipreferwater/netflikss-golang/organizer"
 )
 
-func (r *mutationResolver) CreateSerie(ctx context.Context, input model.InputSerie) (*model.Serie, error) {
-	serie := &model.Serie{
-		Label: "fake",
-	}
-	return serie, nil
-}
-
 func (r *mutationResolver) BuildSeriesFromInfo(ctx context.Context, input *bool) (bool, error) {
 	series := organizer.ReadAllInside()
 	for idx := range series {

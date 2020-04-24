@@ -34,7 +34,6 @@ input InputSerie {
 }
 
 type Mutation {
-  createSerie(input: InputSerie!): Serie!
   buildSeriesFromInfo(input: Boolean): Boolean!
   createInfoJson(input: Boolean): Boolean!
 }
