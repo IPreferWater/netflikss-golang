@@ -14,6 +14,15 @@ mutation createInfoJson{
   createInfoJson(input:true)
 }
 
+mutation updateConfig{
+  updateConfig(input:{
+    fileServerPath:"newFileServerPath",
+    stockPath:"/Movies/example_netflikss",
+    port:"7171",
+    allowedOrigin:"http://localhost:64594"
+  })
+}
+
  netflikss{
     configuration{
       fileServerPath,
