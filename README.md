@@ -14,16 +14,19 @@ mutation createInfoJson{
   createInfoJson(input:true)
 }
 
-query data {
-  netflikss{
+ netflikss{
+    configuration{
+      fileServerPath,
+      stockPath,
+      serverConfiguration{port,allowedOrigin}
+    },
       	series{
       label,
           stockPath,
-          img,
+          img
       seasons{
         number,
         label, 
-        directoryName
         directoryName
         episodes{
           label,
@@ -33,4 +36,3 @@ query data {
       }
     }
   }
-}

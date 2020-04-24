@@ -20,12 +20,12 @@ type Episode {
 }
 
 type Data {
-	series : [Serie!]!
-	configuration : Configuration!
+	series: [Serie!]!
+	configuration: Configuration!
 }
 
 type Query {
-  netflikss : Data!
+  netflikss: Data!
 }
 
 input InputSerie {
