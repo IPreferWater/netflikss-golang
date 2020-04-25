@@ -1,16 +1,3 @@
-type MovieBundle {
-  	directoryName: String!
-	label: String!
-	stockPath: String!
-	img: String!
-	movies: [Movie!]
-}
-
-type SingleMovieBundle {
-	movie: Movie!
-	number: Int!
-}
-
 type Movie {
 	directoryName: String!
   	fileName: String!
