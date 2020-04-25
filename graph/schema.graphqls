@@ -1,7 +1,13 @@
-
+type Folder {
+	name: String!
+	label: String!
+	stockPath: String!
+	img: String!
+}
 
 type Data {
 	series: [Serie!]!
+	movies: [Movie!]!
 	configuration: Configuration!
 }
 
@@ -10,7 +16,7 @@ type Query {
 }
 
 type Mutation {
-  buildSeriesFromInfo(input: Boolean): Boolean!
+  buildDataFromInfo(input: Boolean): Boolean!
   createInfoJson(input: Boolean): Boolean!
   updateConfig(input: InputConfiguration): Boolean!
 }

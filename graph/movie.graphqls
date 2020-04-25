@@ -1,7 +1,4 @@
 type Movie {
-	directoryName: String!
-  	fileName: String!
-	label: String!
-	stockPath: String!
-	img: String!
+	folder: Folder!
+	fileName: String!
 }
