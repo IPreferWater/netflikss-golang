@@ -80,11 +80,13 @@ func filterByImg(files []os.FileInfo) []os.FileInfo {
 }
 
 //ReadAllInside read all info.json files
-func ReadAllInside() []model.Serie {
+func ReadAllInfoJson() model.Data {
 	path := configuration.GetFileAndStockPath()
 	files := getAllDirectories(path)
 
-	series := make([]model.Serie, 0)
+	//series := make([]model.Serie, 0)
+
+	data := model.Data{}
 
 	for _, directory := range files {
 		infoJSONPath := filepath.Join(path, directory.Name(), infoJSONFileName)
@@ -93,15 +95,29 @@ func ReadAllInside() []model.Serie {
 			if err != nil {
 				log.Fatal(err)
 			}
-			serie := model.Serie{}
-			err = json.Unmarshal(content, &serie)
-			if err != nil {
-				fmt.Printf("Failed to unmarshal content %s, the error is %v", string(content), err)
+
+			var result map[string]interface{}
+			json.Unmarshal([]byte(content), &result)
+
+			if "serie" == result["type"] {
+				serie := model.Serie{}
+				err = json.Unmarshal(content, &serie)
+				if err != nil {
+					fmt.Printf("Failed to unmarshal serie content %s, the error is %v", string(content), err)
+				}
+				data.Series = append(data.Series, &serie)
+			} else if "movie" == result["type"] {
+				movie := model.Movie{}
+				err = json.Unmarshal(content, &movie)
+				if err != nil {
+					fmt.Printf("Failed to unmarshal movie content %s, the error is %v", string(content), err)
+				}
+				data.Movies = append(data.Movies, &movie)
 			}
-			series = append(series, serie)
+
 		}
 	}
-	return series
+	return data
 }
 
 func isNumeric(s string) bool {

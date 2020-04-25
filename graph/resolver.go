@@ -6,4 +6,5 @@ import (
 
 type Resolver struct {
 	series []*model.Serie
+	movies []*model.Movie
 }
