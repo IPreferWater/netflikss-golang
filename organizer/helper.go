@@ -72,7 +72,7 @@ func filterByImg(files []os.FileInfo) []os.FileInfo {
 	directories := make([]os.FileInfo, 0)
 	for _, file := range files {
 
-		if filepath.Ext(file.Name()) == ".jpg" {
+		if isExtensionImg(filepath.Ext(file.Name())) {
 			directories = append(directories, file)
 		}
 	}
@@ -118,6 +118,13 @@ func ReadAllInfoJson() model.Data {
 		}
 	}
 	return data
+}
+
+func isExtensionImg(s string) bool {
+	return s == ".jpg"
+}
+func isExtensionVideo(s string) bool {
+	return s == ".mp4" || s == ".MP4"
 }
 
 func isNumeric(s string) bool {

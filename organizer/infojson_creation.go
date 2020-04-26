@@ -23,19 +23,42 @@ func BuildInfoJSONFile() {
 		infoJSONPath := filepath.Join(directoryPath, infoJSONFileName)
 
 		if !fileExists(infoJSONPath) {
-
+			var objectToWrite interface{}
 			allFiles := getAllFiles(directoryPath)
 
 			guessType := guessType(allFiles)
 
 			if guessType == "serie" {
-				createSerie(allFiles, directory, infoJSONPath, directoryPath)
+				objectToWrite = createSerie(allFiles, directory, directoryPath)
 			} else if guessType == "movie" {
 				fmt.Println("need to create a movie")
-			}
 
+				movie := createMovie(allFiles)
+				folder := model.Folder{
+					Name:      directory.Name(),
+					Label:     directory.Name(),
+					StockPath: di.Configuration.StockPath,
+				}
+				movie.Folder = &folder
+				objectToWrite = movie
+			}
+			writeInfoJSONFile(objectToWrite, infoJSONPath)
 		}
 	}
+}
+
+func createMovie(files []os.FileInfo) model.Movie {
+	movieToCreate := model.Movie{}
+
+	for _, file := range files {
+		ext := filepath.Ext(file.Name())
+		if isExtensionVideo(ext) {
+			movieToCreate.FileName = file.Name()
+		} else if isExtensionImg(ext) {
+			movieToCreate.Img = file.Name()
+		}
+	}
+	return movieToCreate
 }
 
 func guessType(files []os.FileInfo) string {
@@ -43,12 +66,17 @@ func guessType(files []os.FileInfo) string {
 
 	for _, file := range files {
 		ext := filepath.Ext(file.Name())
-		if ext == ".mp4" || ext == ".MP4" {
+		if isExtensionVideo(ext) {
 			return "movie"
 		}
 	}
 
 	return "serie"
+}
+
+func writeInfoJSONFile(object interface{}, infoJSONPath string) {
+	file, _ := json.MarshalIndent(object, "", " ")
+	_ = ioutil.WriteFile(infoJSONPath, file, 0644)
 }
 
 func findImage(files []os.FileInfo) string {
@@ -60,7 +88,7 @@ func findImage(files []os.FileInfo) string {
 	return allImages[0].Name()
 }
 
-func createSerie(files []os.FileInfo, directory os.FileInfo, infoJSONPath string, directoryPath string) {
+func createSerie(files []os.FileInfo, directory os.FileInfo, directoryPath string) model.Serie {
 
 	seasonsDirs := filterByDirectory(files)
 
@@ -91,20 +119,10 @@ func createSerie(files []os.FileInfo, directory os.FileInfo, infoJSONPath string
 			Episodes:      episodeCreated,
 		}
 		seasonsToCreate = append(seasonsToCreate, &newSeason)
-
 	}
 
 	serieToCreate.Seasons = seasonsToCreate
-
-	writeInfoJSONFile(serieToCreate, infoJSONPath)
-	/*file, _ := json.MarshalIndent(serieToCreate, "", " ")
-	_ = ioutil.WriteFile(infoJSONPath, file, 0644)*/
-
-}
-
-func writeInfoJSONFile(object interface{}, infoJSONPath string) {
-	file, _ := json.MarshalIndent(object, "", " ")
-	_ = ioutil.WriteFile(infoJSONPath, file, 0644)
+	return serieToCreate
 }
 
 func createAllEpisode(episodes []os.FileInfo) []*model.Episode {

@@ -1,4 +1,5 @@
 type Movie {
 	folder: Folder!
 	fileName: String!
+	img: String!
 }
