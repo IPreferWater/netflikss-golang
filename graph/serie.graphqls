@@ -1,7 +1,5 @@
 type Serie {
-  	directoryName: String!
-	label: String!
-	stockPath: String!
+	folder: Folder!
 	img: String!
 	seasons: [Season!]
   }

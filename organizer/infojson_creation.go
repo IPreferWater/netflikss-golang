@@ -2,7 +2,6 @@ package organizer
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -25,20 +24,21 @@ func BuildInfoJSONFile() {
 		if !fileExists(infoJSONPath) {
 			var objectToWrite interface{}
 			allFiles := getAllFiles(directoryPath)
-
 			guessType := guessType(allFiles)
 
-			if guessType == "serie" {
-				objectToWrite = createSerie(allFiles, directory, directoryPath)
-			} else if guessType == "movie" {
-				fmt.Println("need to create a movie")
+			folder := model.Folder{
+				Name:      directory.Name(),
+				Label:     directory.Name(),
+				StockPath: di.Configuration.StockPath,
+			}
 
+			if guessType == "serie" {
+				serie := createSerie(allFiles, directoryPath)
+				serie.Folder = &folder
+				objectToWrite = serie
+
+			} else if guessType == "movie" {
 				movie := createMovie(allFiles)
-				folder := model.Folder{
-					Name:      directory.Name(),
-					Label:     directory.Name(),
-					StockPath: di.Configuration.StockPath,
-				}
 				movie.Folder = &folder
 				objectToWrite = movie
 			}
@@ -88,16 +88,13 @@ func findImage(files []os.FileInfo) string {
 	return allImages[0].Name()
 }
 
-func createSerie(files []os.FileInfo, directory os.FileInfo, directoryPath string) model.Serie {
+func createSerie(files []os.FileInfo, directoryPath string) model.Serie {
 
 	seasonsDirs := filterByDirectory(files)
 
 	img := findImage(files)
 	serieToCreate := model.Serie{
-		DirectoryName: directory.Name(),
-		Label:         directory.Name(),
-		StockPath:     di.Configuration.StockPath,
-		Img:           img,
+		Img: img,
 	}
 
 	seasonsToCreate := make([]*model.Season, 0)
