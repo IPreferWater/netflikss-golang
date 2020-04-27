@@ -1,6 +1,5 @@
 type Serie {
-	folder: Folder!
-	img: String!
+	info: Info!
 	seasons: [Season!]
   }
 

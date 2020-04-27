@@ -25,21 +25,23 @@ func BuildInfoJSONFile() {
 			var objectToWrite interface{}
 			allFiles := getAllFiles(directoryPath)
 			guessType := guessType(allFiles)
+			img := findImage(allFiles)
 
-			folder := model.Folder{
-				Name:      directory.Name(),
+			info := model.Info{
+				Directory:      directory.Name(),
 				Label:     directory.Name(),
 				StockPath: di.Configuration.StockPath,
+				Img:       img,
 			}
 
 			if guessType == "serie" {
 				serie := createSerie(allFiles, directoryPath)
-				serie.Folder = &folder
+				serie.Info = &info
 				objectToWrite = serie
 
 			} else if guessType == "movie" {
 				movie := createMovie(allFiles)
-				movie.Folder = &folder
+				movie.Info = &info
 				objectToWrite = movie
 			}
 			writeInfoJSONFile(objectToWrite, infoJSONPath)
@@ -54,8 +56,6 @@ func createMovie(files []os.FileInfo) model.Movie {
 		ext := filepath.Ext(file.Name())
 		if isExtensionVideo(ext) {
 			movieToCreate.FileName = file.Name()
-		} else if isExtensionImg(ext) {
-			movieToCreate.Img = file.Name()
 		}
 	}
 	return movieToCreate
@@ -81,7 +81,7 @@ func writeInfoJSONFile(object interface{}, infoJSONPath string) {
 
 func findImage(files []os.FileInfo) string {
 	allImages := filterByImg(files)
-	if len(allImages) < 0 {
+	if len(allImages) <= 0 {
 		//no image found
 		return ""
 	}
@@ -91,11 +91,6 @@ func findImage(files []os.FileInfo) string {
 func createSerie(files []os.FileInfo, directoryPath string) model.Serie {
 
 	seasonsDirs := filterByDirectory(files)
-
-	img := findImage(files)
-	serieToCreate := model.Serie{
-		Img: img,
-	}
 
 	seasonsToCreate := make([]*model.Season, 0)
 
@@ -118,7 +113,9 @@ func createSerie(files []os.FileInfo, directoryPath string) model.Serie {
 		seasonsToCreate = append(seasonsToCreate, &newSeason)
 	}
 
-	serieToCreate.Seasons = seasonsToCreate
+	serieToCreate := model.Serie{
+		Seasons: seasonsToCreate,
+	}
 	return serieToCreate
 }
 

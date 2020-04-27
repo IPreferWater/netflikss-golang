@@ -1,7 +1,8 @@
-type Folder {
-	name: String!
+type Info {
+	directory: String!
 	label: String!
 	stockPath: String!
+	img: String!
 }
 
 type Data {
