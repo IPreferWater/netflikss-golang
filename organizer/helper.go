@@ -98,15 +98,16 @@ func ReadAllInfoJson() model.Data {
 
 			var result map[string]interface{}
 			json.Unmarshal([]byte(content), &result)
+			tyype := result["info"].(map[string]interface{})["type"]
 
-			if "serie" == result["type"] {
+			if "serie" == tyype {
 				serie := model.Serie{}
 				err = json.Unmarshal(content, &serie)
 				if err != nil {
 					fmt.Printf("Failed to unmarshal serie content %s, the error is %v", string(content), err)
 				}
 				data.Series = append(data.Series, &serie)
-			} else if "movie" == result["type"] {
+			} else if "movie" == tyype {
 				movie := model.Movie{}
 				err = json.Unmarshal(content, &movie)
 				if err != nil {

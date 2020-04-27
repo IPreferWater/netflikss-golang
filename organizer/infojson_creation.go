@@ -28,10 +28,11 @@ func BuildInfoJSONFile() {
 			img := findImage(allFiles)
 
 			info := model.Info{
-				Directory:      directory.Name(),
+				Directory: directory.Name(),
 				Label:     directory.Name(),
 				StockPath: di.Configuration.StockPath,
 				Img:       img,
+				Type:      guessType,
 			}
 
 			if guessType == "serie" {

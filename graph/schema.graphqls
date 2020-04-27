@@ -3,6 +3,7 @@ type Info {
 	label: String!
 	stockPath: String!
 	img: String!
+	type: String!
 }
 
 type Data {
