@@ -121,6 +121,10 @@ func ReadAllInfoJson() model.Data {
 	return data
 }
 
+func removeExtFromFilename(s string) string {
+return strings.TrimSuffix(s, filepath.Ext(s))
+}
+
 func isExtensionImg(s string) bool {
 	return s == ".jpg"
 }

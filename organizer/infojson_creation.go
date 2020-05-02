@@ -52,7 +52,8 @@ func BuildInfoJSONFile() {
 
 func createMovie(files []os.FileInfo) model.Movie {
 	movieToCreate := model.Movie{}
-
+//TODO: for the serie we create the episode name depending on fileName but for movie it depend on directoryName
+//we shouldn't use 2 solutions
 	for _, file := range files {
 		ext := filepath.Ext(file.Name())
 		if isExtensionVideo(ext) {
@@ -124,15 +125,18 @@ func createAllEpisode(episodes []os.FileInfo) []*model.Episode {
 	episodesToCreate := make([]*model.Episode, 0)
 	for _, episode := range episodes {
 		fileName := episode.Name()
+		ext := filepath.Ext(fileName)
+		if !isExtensionVideo(ext) {
+			continue
+		}
 
 		guessNumber := guessNumber(fileName)
 		number, _ := strconv.Atoi(guessNumber)
 
-		//TODO: we should initialize a label without extenstion
 		newEpisode := model.Episode{
 			FileName: fileName,
 			Number:   number,
-			Label:    fileName,
+			Label:    removeExtFromFilename(fileName),
 		}
 		episodesToCreate = append(episodesToCreate, &newEpisode)
 	}
