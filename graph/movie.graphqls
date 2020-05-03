@@ -1,0 +1,4 @@
+type Movie {
+	info: Info!
+	fileName: String!
+}

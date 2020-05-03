@@ -18,75 +18,125 @@ func BuildInfoJSONFile() {
 	directories := getAllDirectories(path)
 
 	for _, directory := range directories {
-		infoJSONPath := filepath.Join(path, directory.Name(), infoJSONFileName)
+		directoryPath := filepath.Join(path, directory.Name())
+		infoJSONPath := filepath.Join(directoryPath, infoJSONFileName)
 
 		if !fileExists(infoJSONPath) {
-
-			seasonDirPath := filepath.Join(path, directory.Name())
-
-			allFiles := getAllFiles(seasonDirPath)
-			seasonsDirs := filterByDirectory(allFiles)
-
+			var objectToWrite interface{}
+			allFiles := getAllFiles(directoryPath)
+			guessType := guessType(allFiles)
 			img := findImage(allFiles)
-			serieToCreate := model.Serie{
-				DirectoryName: directory.Name(),
-				Label:         directory.Name(),
-				StockPath:     di.Configuration.StockPath,
-				Img:           img,
+
+			info := model.Info{
+				Directory: directory.Name(),
+				Label:     directory.Name(),
+				StockPath: di.Configuration.StockPath,
+				Img:       img,
+				Type:      guessType,
 			}
 
-			seasonsToCreate := make([]*model.Season, 0)
+			if guessType == "serie" {
+				serie := createSerie(allFiles, directoryPath)
+				serie.Info = &info
+				objectToWrite = serie
 
-			for _, seasonDir := range seasonsDirs {
-				fileName := seasonDir.Name()
-
-				episodesPath := filepath.Join(path, directory.Name(), fileName)
-				episodes := getAllFiles(episodesPath)
-				episodeCreated := createAllEpisode(episodes)
-
-				guessNumber := guessNumber(fileName)
-				number, _ := strconv.Atoi(guessNumber)
-
-				newSeason := model.Season{
-					DirectoryName: seasonDir.Name(),
-					Number:        number,
-					Label:         guessNumber,
-					Episodes:      episodeCreated,
-				}
-				seasonsToCreate = append(seasonsToCreate, &newSeason)
-
+			} else if guessType == "movie" {
+				movie := createMovie(allFiles)
+				movie.Info = &info
+				objectToWrite = movie
 			}
-
-			serieToCreate.Seasons = seasonsToCreate
-
-			file, _ := json.MarshalIndent(serieToCreate, "", " ")
-			_ = ioutil.WriteFile(infoJSONPath, file, 0644)
+			writeInfoJSONFile(objectToWrite, infoJSONPath)
 		}
 	}
 }
 
+func createMovie(files []os.FileInfo) model.Movie {
+	movieToCreate := model.Movie{}
+//TODO: for the serie we create the episode name depending on fileName but for movie it depend on directoryName
+//we shouldn't use 2 solutions
+	for _, file := range files {
+		ext := filepath.Ext(file.Name())
+		if isExtensionVideo(ext) {
+			movieToCreate.FileName = file.Name()
+		}
+	}
+	return movieToCreate
+}
+
+func guessType(files []os.FileInfo) string {
+	//TODO: make an enum with iota
+
+	for _, file := range files {
+		ext := filepath.Ext(file.Name())
+		if isExtensionVideo(ext) {
+			return "movie"
+		}
+	}
+
+	return "serie"
+}
+
+func writeInfoJSONFile(object interface{}, infoJSONPath string) {
+	file, _ := json.MarshalIndent(object, "", " ")
+	_ = ioutil.WriteFile(infoJSONPath, file, 0644)
+}
+
 func findImage(files []os.FileInfo) string {
 	allImages := filterByImg(files)
-	if len(allImages) < 0 {
+	if len(allImages) <= 0 {
 		//no image found
 		return ""
 	}
 	return allImages[0].Name()
 }
 
-func createAllEpisode(episodes []os.FileInfo) []*model.Episode {
-	episodesToCreate := make([]*model.Episode, 0)
-	for _, episode := range episodes {
-		fileName := episode.Name()
+func createSerie(files []os.FileInfo, directoryPath string) model.Serie {
+
+	seasonsDirs := filterByDirectory(files)
+
+	seasonsToCreate := make([]*model.Season, 0)
+
+	for _, seasonDir := range seasonsDirs {
+		fileName := seasonDir.Name()
+
+		episodesPath := filepath.Join(directoryPath, fileName)
+		episodes := getAllFiles(episodesPath)
+		episodeCreated := createAllEpisode(episodes)
 
 		guessNumber := guessNumber(fileName)
 		number, _ := strconv.Atoi(guessNumber)
 
-		//TODO: we should initialize a label without extenstion
+		newSeason := model.Season{
+			DirectoryName: seasonDir.Name(),
+			Number:        number,
+			Label:         guessNumber,
+			Episodes:      episodeCreated,
+		}
+		seasonsToCreate = append(seasonsToCreate, &newSeason)
+	}
+
+	serieToCreate := model.Serie{
+		Seasons: seasonsToCreate,
+	}
+	return serieToCreate
+}
+
+func createAllEpisode(episodes []os.FileInfo) []*model.Episode {
+	episodesToCreate := make([]*model.Episode, 0)
+	for _, episode := range episodes {
+		fileName := episode.Name()
+		ext := filepath.Ext(fileName)
+		if !isExtensionVideo(ext) {
+			continue
+		}
+
+		guessNumber := guessNumber(fileName)
+		number, _ := strconv.Atoi(guessNumber)
+
 		newEpisode := model.Episode{
 			FileName: fileName,
 			Number:   number,
-			Label:    fileName,
+			Label:    removeExtFromFilename(fileName),
 		}
 		episodesToCreate = append(episodesToCreate, &newEpisode)
 	}

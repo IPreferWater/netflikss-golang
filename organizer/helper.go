@@ -72,7 +72,7 @@ func filterByImg(files []os.FileInfo) []os.FileInfo {
 	directories := make([]os.FileInfo, 0)
 	for _, file := range files {
 
-		if filepath.Ext(file.Name()) == ".jpg" {
+		if isExtensionImg(filepath.Ext(file.Name())) {
 			directories = append(directories, file)
 		}
 	}
@@ -80,11 +80,13 @@ func filterByImg(files []os.FileInfo) []os.FileInfo {
 }
 
 //ReadAllInside read all info.json files
-func ReadAllInside() []model.Serie {
+func ReadAllInfoJson() model.Data {
 	path := configuration.GetFileAndStockPath()
 	files := getAllDirectories(path)
 
-	series := make([]model.Serie, 0)
+	//series := make([]model.Serie, 0)
+
+	data := model.Data{}
 
 	for _, directory := range files {
 		infoJSONPath := filepath.Join(path, directory.Name(), infoJSONFileName)
@@ -93,15 +95,41 @@ func ReadAllInside() []model.Serie {
 			if err != nil {
 				log.Fatal(err)
 			}
-			serie := model.Serie{}
-			err = json.Unmarshal(content, &serie)
-			if err != nil {
-				fmt.Printf("Failed to unmarshal content %s, the error is %v", string(content), err)
+
+			var result map[string]interface{}
+			json.Unmarshal([]byte(content), &result)
+			tyype := result["info"].(map[string]interface{})["type"]
+
+			if "serie" == tyype {
+				serie := model.Serie{}
+				err = json.Unmarshal(content, &serie)
+				if err != nil {
+					fmt.Printf("Failed to unmarshal serie content %s, the error is %v", string(content), err)
+				}
+				data.Series = append(data.Series, &serie)
+			} else if "movie" == tyype {
+				movie := model.Movie{}
+				err = json.Unmarshal(content, &movie)
+				if err != nil {
+					fmt.Printf("Failed to unmarshal movie content %s, the error is %v", string(content), err)
+				}
+				data.Movies = append(data.Movies, &movie)
 			}
-			series = append(series, serie)
+
 		}
 	}
-	return series
+	return data
+}
+
+func removeExtFromFilename(s string) string {
+return strings.TrimSuffix(s, filepath.Ext(s))
+}
+
+func isExtensionImg(s string) bool {
+	return s == ".jpg"
+}
+func isExtensionVideo(s string) bool {
+	return s == ".mp4" || s == ".MP4"
 }
 
 func isNumeric(s string) bool {

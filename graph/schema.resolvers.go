@@ -15,10 +15,13 @@ import (
 	"github.com/ipreferwater/netflikss-golang/organizer"
 )
 
-func (r *mutationResolver) BuildSeriesFromInfo(ctx context.Context, input *bool) (bool, error) {
-	series := organizer.ReadAllInside()
-	for idx := range series {
-		r.series = append(r.series, &series[idx])
+func (r *mutationResolver) BuildDataFromInfo(ctx context.Context, input *bool) (bool, error) {
+	data := organizer.ReadAllInfoJson()
+	for index := range data.Series {
+		r.series = append(r.series, data.Series[index])
+	}
+	for index := range data.Movies {
+		r.movies = append(r.movies, data.Movies[index])
 	}
 
 	return true, nil
@@ -78,6 +81,7 @@ func (r *queryResolver) Netflikss(ctx context.Context) (*model.Data, error) {
 
 	data := &model.Data{
 		Series:        r.series,
+		Movies:        r.movies,
 		Configuration: &configuration,
 	}
 	return data, nil

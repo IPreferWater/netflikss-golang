@@ -1,26 +1,14 @@
-type Serie {
-  	directoryName: String!
+type Info {
+	directory: String!
 	label: String!
 	stockPath: String!
 	img: String!
-	seasons: [Season!]
-  }
-
-type Season {
-	directoryName: String!
-	number: Int!
-	label: String!
-	episodes: [Episode!]
-}
-
-type Episode {
-	fileName: String!
-	number: Int!
-	label: String!
+	type: String!
 }
 
 type Data {
 	series: [Serie!]!
+	movies: [Movie!]!
 	configuration: Configuration!
 }
 
@@ -29,7 +17,7 @@ type Query {
 }
 
 type Mutation {
-  buildSeriesFromInfo(input: Boolean): Boolean!
+  buildDataFromInfo(input: Boolean): Boolean!
   createInfoJson(input: Boolean): Boolean!
   updateConfig(input: InputConfiguration): Boolean!
 }

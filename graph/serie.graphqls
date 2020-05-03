@@ -1,0 +1,17 @@
+type Serie {
+	info: Info!
+	seasons: [Season!]
+  }
+
+type Season {
+	directoryName: String!
+	number: Int!
+	label: String!
+	episodes: [Episode!]
+}
+
+type Episode {
+	fileName: String!
+	number: Int!
+	label: String!
+}
